@@ -12,10 +12,14 @@ public class Settings extends Observable {
 
     private float zoomLevel;
     private SettingsController.FractaleType fractaleType;
+    private int centerX;
+    private int centerY;
 
     public Settings(float zoomLevel, SettingsController.FractaleType fractaleType) {
         this.zoomLevel = zoomLevel;
         this.fractaleType = fractaleType;
+        this.centerX = 0;
+        this.centerY = 0;
     }
 
     public float getZoomLevel() {
@@ -24,8 +28,7 @@ public class Settings extends Observable {
 
     public void setZoomLevel(float zoomLevel) {
         this.zoomLevel = zoomLevel;
-        setChanged();
-        notifyObservers();
+        fire();
     }
 
     public SettingsController.FractaleType getFractaleType() {
@@ -34,6 +37,44 @@ public class Settings extends Observable {
 
     public void setFractaleType(SettingsController.FractaleType fractaleType) {
         this.fractaleType = fractaleType;
+        fire();
+    }
+
+    public int getCenterX() {
+        return centerX;
+    }
+
+    public void setCenterX(int centerX) {
+        this.centerX = centerX;
+        fire();
+    }
+
+    public int getCenterY() {
+        return centerY;
+    }
+
+    public void setCenterY(int centerY) {
+        this.centerY = centerY;
+        fire();
+    }
+
+    public int getViewX(int x) {
+        return (int) ((x - centerX) / zoomLevel);
+    }
+
+    public int getViewY(int y) {
+        return (int) ((y - centerY) / zoomLevel);
+    }
+
+    public int getMapX(int x) {
+        return (int) ((x - centerX) * zoomLevel);
+    }
+
+    public int getMapY(int y) {
+        return (int) ((y - centerY) * zoomLevel);
+    }
+
+    private void fire() {
         setChanged();
         notifyObservers();
     }

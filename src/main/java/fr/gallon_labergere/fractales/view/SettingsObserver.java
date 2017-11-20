@@ -31,8 +31,8 @@ public abstract class SettingsObserver extends JPanel implements Observer {
         if (!(o instanceof Settings))
             throw new IllegalStateException("Update cannot be triggered by anything else than Settings");
         Settings settings = (Settings) o;
-        update(settings.getZoomLevel(), settings.getFractaleType());
+        update(settings.getZoomLevel(), settings.getFractaleType(), settings.getCenterX(), settings.getCenterY());
     }
 
-    abstract void update(float zoomLevel, SettingsController.FractaleType fractaleType);
+    abstract void update(float zoomLevel, SettingsController.FractaleType fractaleType, int x, int y);
 }
