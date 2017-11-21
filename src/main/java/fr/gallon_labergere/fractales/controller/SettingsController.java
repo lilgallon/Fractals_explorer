@@ -1,9 +1,11 @@
 package fr.gallon_labergere.fractales.controller;
 
 import fr.gallon_labergere.fractales.model.Settings;
-import fr.gallon_labergere.fractales.view.drawers.IFractaleDrawer;
+import fr.gallon_labergere.fractales.view.drawers.IFractalDrawer;
 import fr.gallon_labergere.fractales.view.drawers.MandelbrotDrawer;
 import fr.gallon_labergere.fractales.view.drawers.OtherDrawer;
+import org.omg.CORBA.DynAnyPackage.InvalidValue;
+import org.omg.CORBA.ExceptionList;
 
 public class SettingsController {
 
@@ -39,8 +41,8 @@ public class SettingsController {
         move((int) ((newX - prevX) * settingsModel.getZoomLevel()), (int) ((newY - prevY) * settingsModel.getZoomLevel()));
     }
 
-    public void setFractaleType(FractaleType fractaleType) {
-        settingsModel.setFractaleType(fractaleType);
+    public void setFractalType(FractalType fractalType) {
+        settingsModel.setFractalType(fractalType);
     }
 
     public void move(int dx, int dy) {
@@ -48,17 +50,44 @@ public class SettingsController {
         settingsModel.setCenterY(settingsModel.getCenterY() + dy);
     }
 
-    public enum FractaleType {
-        MANDELBROT(new MandelbrotDrawer(-2.5f, -1, 1, 1)),
+    /**
+     * Updates the progression according to the current index (current) and the final index (aimed)
+     * @param current Current index
+     * @param aimed Aimed index (final index)
+     */
+    public void updateProgression(int current, int aimed){
+        /*
+        if(current>aimed)
+            throw new IllegalArgumentException("The current value is bigger than the aimed value.");
+        if(current<0)
+            throw new IllegalArgumentException("The current value is negative.");
+        if(aimed<0)
+            throw new IllegalArgumentException("The aimed value is negative.");
+        */
+        int progress = (current * 100) / aimed;
+
+        // Don't update everytime!!! Only when there is an update to prevent stackoverflow
+        // Each 10% we will update.
+        if(progress>settingsModel.getProgression())
+            settingsModel.setProgression(progress);
+    }
+
+    public void resetProgression() {
+        settingsModel.setProgression(0);
+    }
+
+    public enum FractalType {
+        // The Mandelbrot suite is always between -2.1 and 0.6 on the abscissa axis and between -1.2 and 1.2 on the ordinate axis.
+        MANDELBROT(new MandelbrotDrawer(-2.1, 0.6, -1.2, 1.2)),
         OTHER(new OtherDrawer(0, 0, 0, 0));
 
-        private IFractaleDrawer drawer;
+        private IFractalDrawer drawer;
 
-        FractaleType(IFractaleDrawer drawer) {
+        FractalType(IFractalDrawer drawer) {
             this.drawer = drawer;
         }
 
-        public IFractaleDrawer getDrawer() {
+        public IFractalDrawer getDrawer() {
             return drawer;
         }
     }

@@ -11,15 +11,17 @@ public class Settings extends Observable {
     public static final float ZOOM_STEP = 0.5f;
 
     private float zoomLevel;
-    private SettingsController.FractaleType fractaleType;
+    private SettingsController.FractalType fractalType;
     private int centerX;
     private int centerY;
+    private int progression;
 
-    public Settings(float zoomLevel, SettingsController.FractaleType fractaleType) {
+    public Settings(float zoomLevel, SettingsController.FractalType fractalType) {
         this.zoomLevel = zoomLevel;
-        this.fractaleType = fractaleType;
+        this.fractalType = fractalType;
         this.centerX = 0;
         this.centerY = 0;
+        this.progression = 0;
     }
 
     public float getZoomLevel() {
@@ -31,12 +33,12 @@ public class Settings extends Observable {
         fire();
     }
 
-    public SettingsController.FractaleType getFractaleType() {
-        return fractaleType;
+    public SettingsController.FractalType getFractalType() {
+        return fractalType;
     }
 
-    public void setFractaleType(SettingsController.FractaleType fractaleType) {
-        this.fractaleType = fractaleType;
+    public void setFractalType(SettingsController.FractalType fractalType) {
+        this.fractalType = fractalType;
         fire();
     }
 
@@ -66,16 +68,31 @@ public class Settings extends Observable {
         return (int) ((y - centerY) / zoomLevel);
     }
 
-    public int getMapX(int x) {
-        return (int) ((x - centerX) * zoomLevel);
+    public double getMapX(double x) {
+        return (x - centerX) * zoomLevel;
     }
 
-    public int getMapY(int y) {
-        return (int) ((y - centerY) * zoomLevel);
+    public double getMapY(double y) {
+        return (y - centerY) * zoomLevel;
     }
 
+    public int getProgression(){
+        return this.progression;
+    }
+
+    public void setProgression(int progression){
+        this.progression = progression;
+    }
+
+
+
+    /**
+     * When the model (this class) spots a change, we need to notify the observers about it.
+     * This method is used to say to the observers that the observable class has been changed.
+     */
     private void fire() {
         setChanged();
         notifyObservers();
     }
+
 }

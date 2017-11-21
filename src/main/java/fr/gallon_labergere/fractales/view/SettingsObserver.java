@@ -26,13 +26,25 @@ public abstract class SettingsObserver extends JPanel implements Observer {
         return settingsController;
     }
 
+    /**
+     * This method will be called whenever the Observable (model) spots a change.
+     * @param o
+     * @param arg
+     */
     @Override
     public void update(Observable o, Object arg) {
         if (!(o instanceof Settings))
             throw new IllegalStateException("Update cannot be triggered by anything else than Settings");
         Settings settings = (Settings) o;
-        update(settings.getZoomLevel(), settings.getFractaleType(), settings.getCenterX(), settings.getCenterY());
+        update(settings.getZoomLevel(), settings.getFractalType(), settings.getCenterX(), settings.getCenterY());
     }
 
-    abstract void update(float zoomLevel, SettingsController.FractaleType fractaleType, int x, int y);
+    /**
+     * This method will be defined in inherited classes.
+     * @param zoomLevel
+     * @param fractalType
+     * @param x
+     * @param y
+     */
+    abstract void update(float zoomLevel, SettingsController.FractalType fractalType, int x, int y);
 }

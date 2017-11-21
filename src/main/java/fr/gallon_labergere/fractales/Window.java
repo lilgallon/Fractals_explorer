@@ -15,13 +15,16 @@ public class Window extends JFrame {
     private Settings settings;
     private SettingsController settingsController;
 
+    private final int WIDTH = 1280;
+    private final int HEIGHT = 720;
+
     private Window() {
         instance = this;
 
-        settings = new Settings(1f, SettingsController.FractaleType.MANDELBROT);
+        settings = new Settings(1f, SettingsController.FractalType.MANDELBROT);
         settingsController = new SettingsController(settings);
 
-        setMinimumSize(new Dimension(1280, 720));
+        setMinimumSize(new Dimension(WIDTH, HEIGHT));
         setTitle("Projet Java - Fractales - Lilian Gallon, Rémi Labergère");
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

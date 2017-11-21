@@ -7,6 +7,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
+/**
+ * It is the panel on which fractales will be drawn
+ */
 public class ViewPanel extends SettingsObserver {
 
     public ViewPanel(SettingsController controller) {
@@ -58,14 +61,25 @@ public class ViewPanel extends SettingsObserver {
         });
     }
 
+    /**
+     * Updates the current fractale by repainting it.
+     * @param zoomLevel zoom level on the fractale
+     * @param fractalType selected fractale
+     * @param x horizontal gap according to the center of the fractale
+     * @param y vertical gap according to the center of the fracale
+     */
     @Override
-    void update(float zoomLevel, SettingsController.FractaleType fractaleType, int x, int y) {
+    void update(float zoomLevel, SettingsController.FractalType fractalType, int x, int y) {
         paintComponents(getGraphics());
     }
 
+    /**
+     * Paints the fractale
+     * @param g
+     */
     @Override
     public void paintComponents(Graphics g) {
         g.fillRect(0, 0, getWidth(), getHeight());
-        getSettings().getFractaleType().getDrawer().draw(g, getWidth(), getHeight(), getSettings());
+        getSettings().getFractalType().getDrawer().draw(g, getWidth(), getHeight(), getSettings(), getSettingsController());
     }
 }
