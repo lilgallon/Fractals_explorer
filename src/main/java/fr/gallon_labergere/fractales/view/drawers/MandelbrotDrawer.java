@@ -5,11 +5,27 @@ import fr.gallon_labergere.fractales.model.Settings;
 import java.awt.*;
 
 public class MandelbrotDrawer implements IFractaleDrawer {
+
+    private final float MIN_X;
+    private final float MAX_X;
+    private final float MIN_Y;
+    private final float MAX_Y;
+
+    public MandelbrotDrawer(float minX, float minY, float maxX, float maxY) {
+        MIN_X = minX;
+        MAX_X = maxX;
+        MIN_Y = minY;
+        MAX_Y = maxY;
+    }
+
     @Override
     public void draw(Graphics g, int width, int height, Settings settings) {
         g.setColor(Color.WHITE);
         g.drawLine(settings.getCenterX(), -1000, settings.getCenterX(), 1000);
         g.drawLine(-1000, settings.getCenterY(), 1000, settings.getCenterY());
+        float mapRangeX = MAX_X - MIN_X;
+        float mapRangeY = MAX_Y - MIN_Y;
+
         System.out.println("Drawing from (" + settings.getMapX(0) + " ; " + settings.getMapY(0) + ") to ("
             + settings.getMapX(width) + " ; " + settings.getMapY(height) + ")");
 //        int vxmin = settings.getMapX(0);

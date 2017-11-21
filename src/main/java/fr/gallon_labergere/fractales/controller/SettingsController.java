@@ -49,8 +49,8 @@ public class SettingsController {
     }
 
     public enum FractaleType {
-        MANDELBROT(new MandelbrotDrawer()),
-        OTHER(new OtherDrawer());
+        MANDELBROT(new MandelbrotDrawer(-2.5f, -1, 1, 1)),
+        OTHER(new OtherDrawer(0, 0, 0, 0));
 
         private IFractaleDrawer drawer;
 
