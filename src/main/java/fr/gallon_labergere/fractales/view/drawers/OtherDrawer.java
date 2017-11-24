@@ -20,11 +20,11 @@ public class OtherDrawer implements IFractalDrawer {
     }
 
     @Override
-    public void draw(Graphics g, int width, int height, Settings settingsModele, SettingsController settingsController) {
+    public void draw(Graphics g, int width, int height, Settings settingsModel, SettingsController settingsController) {
         g.setColor(Color.WHITE);
-        g.drawLine(settingsModele.getCenterX(), -1000, settingsModele.getCenterX(), 1000);
-        g.drawLine(-1000, settingsModele.getCenterY(), 1000, settingsModele.getCenterY());
-        System.out.println("Drawing from (" + settingsModele.getMapX(0) + " ; " + settingsModele.getMapX(width) + ") and ("
-                + settingsModele.getMapY(0) + " ; " + settingsModele.getMapY(height) + ")");
+        g.drawLine(settingsModel.getCenterX(), -1000, settingsModel.getCenterX(), 1000);
+        g.drawLine(-1000, settingsModel.getCenterY(), 1000, settingsModel.getCenterY());
+        System.out.println("Drawing from (" + settingsModel.getMapX(0) + " ; " + settingsModel.getMapX(width) + ") and ("
+                + settingsModel.getMapY(0) + " ; " + settingsModel.getMapY(height) + ")");
     }
 }

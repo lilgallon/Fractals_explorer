@@ -21,7 +21,7 @@ public class MandelbrotDrawer implements IFractalDrawer {
     }
 
     @Override
-    public void draw(Graphics g, int width, int height, Settings settingsModele, SettingsController settingsController) {
+    public void draw(Graphics g, int width, int height, Settings settingsModel, SettingsController settingsController) {
 
 //        float mapRangeX = MAX_X - MIN_X;
 //        float mapRangeY = MAX_Y - MIN_Y;
@@ -76,17 +76,17 @@ public class MandelbrotDrawer implements IFractalDrawer {
         double it_max = 50;
 
         // The default zoom is not correct for mandelbrot, here ire the adjustments
-        double zoom = settingsModele.getZoomLevel()*40+200;
+        double zoom = settingsModel.getZoomLevel()*40+200;
 
         // MAX_X-MIN_X = fractale width
-        double fractal_width = settingsModele.getMapX(MAX_X-MIN_X+50);
+        double fractal_width = settingsModel.getMapX(MAX_X-MIN_X+50);
         // MAX_Y-MIN_Y = fractale height
-        double fractal_height = settingsModele.getMapX(MAX_Y-MIN_Y);
+        double fractal_height = settingsModel.getMapX(MAX_Y-MIN_Y);
 
         // For every pixel, we will calculate their colors according to if the suite is convergent or divergent
         // The intensity of the colors changes according to the rapidity of the suite to diverge.
-        for(int x=settingsModele.getCenterX(); x<fractal_width+width ; ++x){
-            for(int y=settingsModele.getCenterY(); y<fractal_height+height ; ++y){
+        for(int x = settingsModel.getCenterX(); x<fractal_width+width ; ++x){
+            for(int y = settingsModel.getCenterY(); y<fractal_height+height ; ++y){
                 double c_r = x / zoom + MIN_X;
                 double c_i = y / zoom + MIN_Y;
                 double z_r = 0;
@@ -123,14 +123,14 @@ public class MandelbrotDrawer implements IFractalDrawer {
                  *  Cordialement, lilian <3
                  **/
 
-                settingsController.updateProgression((x+settingsModele.getCenterX())*(y+settingsModele.getCenterY()),(int)((fractal_width+width)*(fractal_height+height)));
+                settingsController.updateProgression((x+ settingsModel.getCenterX())*(y+ settingsModel.getCenterY()),(int)((fractal_width+width)*(fractal_height+height)));
             }
         }
 
         settingsController.resetProgression();
         g.setColor(Color.WHITE);
-        g.drawLine(settingsModele.getCenterX(), -1000, settingsModele.getCenterX(), 1000);
-        g.drawLine(-1000, settingsModele.getCenterY(), 1000, settingsModele.getCenterY());
+        g.drawLine(settingsModel.getCenterX(), -1000, settingsModel.getCenterX(), 1000);
+        g.drawLine(-1000, settingsModel.getCenterY(), 1000, settingsModel.getCenterY());
     }
 
 }

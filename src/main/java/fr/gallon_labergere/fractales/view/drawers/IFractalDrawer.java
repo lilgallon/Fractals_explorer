@@ -7,5 +7,13 @@ import java.awt.*;
 
 public interface IFractalDrawer {
 
-    void draw(Graphics g, int width, int height, Settings settingsModele, SettingsController settingsController);
+    /**
+     * Draw the selected fractal
+     * @param g graphics
+     * @param width view width
+     * @param height view height
+     * @param settingsModel model
+     * @param settingsController controller
+     */
+    void draw(Graphics g, int width, int height, Settings settingsModel, SettingsController settingsController);
 }

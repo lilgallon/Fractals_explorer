@@ -19,6 +19,11 @@ public class SettingsController {
         return settingsModel;
     }
 
+    /**
+     * It zooms in according to the (x,y) point
+     * @param x x point coordinate
+     * @param y y point coordinate
+     */
     public void zoomIn(int x, int y) {
         if (settingsModel.getZoomLevel() >= Settings.MAX_ZOOM)
             return;
@@ -30,6 +35,11 @@ public class SettingsController {
         move((int) ((newX - prevX) * settingsModel.getZoomLevel()), (int) ((newY - prevY) * settingsModel.getZoomLevel()));
     }
 
+    /**
+     * It zooms out according to the (x,y) point
+     * @param x x point coordinate
+     * @param y y point coordinate
+     */
     public void zoomOut(int x, int y) {
         if (settingsModel.getZoomLevel() <= Settings.MIN_ZOOM)
             return;
@@ -41,10 +51,19 @@ public class SettingsController {
         move((int) ((newX - prevX) * settingsModel.getZoomLevel()), (int) ((newY - prevY) * settingsModel.getZoomLevel()));
     }
 
+    /**
+     * Change the current fractal to the new one
+     * @param fractalType
+     */
     public void setFractalType(FractalType fractalType) {
         settingsModel.setFractalType(fractalType);
     }
 
+    /**
+     * Move the fractal
+     * @param dx horizontal gap
+     * @param dy vertical gap
+     */
     public void move(int dx, int dy) {
         settingsModel.setCenterX(settingsModel.getCenterX() + dx);
         settingsModel.setCenterY(settingsModel.getCenterY() + dy);
@@ -72,10 +91,16 @@ public class SettingsController {
             settingsModel.setProgression(progress);
     }
 
+    /**
+     * Reset the bar progression
+     */
     public void resetProgression() {
         settingsModel.setProgression(0);
     }
 
+    /**
+     * Fractal list
+     */
     public enum FractalType {
         // The Mandelbrot suite is always between -2.1 and 0.6 on the abscissa axis and between -1.2 and 1.2 on the ordinate axis.
         MANDELBROT(new MandelbrotDrawer(-2.1, 0.6, -1.2, 1.2)),
