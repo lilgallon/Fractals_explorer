@@ -65,7 +65,7 @@ public class Settings extends Observable {
      */
     public void setCenterX(int centerX) {
         this.centerX = centerX;
-        fire();
+        //fire();
     }
 
     /**
@@ -81,7 +81,7 @@ public class Settings extends Observable {
      */
     public void setCenterY(int centerY) {
         this.centerY = centerY;
-        fire();
+        //fire();
     }
 
     /**

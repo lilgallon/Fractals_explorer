@@ -53,7 +53,9 @@ public class MandelbrotDrawer implements IFractalDrawer {
 //            }
 //        }
 
-        /**
+
+System.out.println("calcul" + settingsModel.getCenterX() + ";" + settingsModel.getCenterY() );
+         /**
          * TODO:
          * 21/11/17
          *
@@ -79,14 +81,14 @@ public class MandelbrotDrawer implements IFractalDrawer {
         double zoom = settingsModel.getZoomLevel()*40+200;
 
         // MAX_X-MIN_X = fractale width
-        double fractal_width = settingsModel.getMapX(MAX_X-MIN_X+50);
+        double fractal_width = settingsModel.getMapX(MAX_X-MIN_X);
         // MAX_Y-MIN_Y = fractale height
         double fractal_height = settingsModel.getMapX(MAX_Y-MIN_Y);
 
         // For every pixel, we will calculate their colors according to if the suite is convergent or divergent
         // The intensity of the colors changes according to the rapidity of the suite to diverge.
-        for(int x = settingsModel.getCenterX(); x<fractal_width+width ; ++x){
-            for(int y = settingsModel.getCenterY(); y<fractal_height+height ; ++y){
+        for(int x = 0 ; x<width ; ++x){
+            for(int y = 0; y<height ; ++y){
                 double c_r = x / zoom + MIN_X;
                 double c_i = y / zoom + MIN_Y;
                 double z_r = 0;
@@ -105,7 +107,7 @@ public class MandelbrotDrawer implements IFractalDrawer {
                 }else{
                     g.setColor(new Color((int)(i*255/it_max),0,0));
                 }
-                g.fillRect(x, y, 1, 1);
+                g.fillRect(x/*+settingsModel.getCenterX()*/, y/*+settingsModel.getCenterY()*/, 1, 1);
 
                 /** TODO:
                  * 21/11/17
