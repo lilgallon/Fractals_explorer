@@ -54,7 +54,7 @@ public class MandelbrotDrawer implements IFractalDrawer {
 //        }
 
 
-System.out.println("calcul" + settingsModel.getCenterX() + ";" + settingsModel.getCenterY() );
+        System.out.println("calcul" + settingsModel.getCenterX() + ";" + settingsModel.getCenterY() );
          /**
          * TODO:
          * 21/11/17
@@ -68,6 +68,11 @@ System.out.println("calcul" + settingsModel.getCenterX() + ";" + settingsModel.g
          * se déplacer, la fractale sera coupée.
          * Il faut trouver le truc qui fait qu'on peut déplacer la fractale (ça doit etre un truc
          * à la con enplus)
+          *
+          * update 28/11/17:
+          * En fait il ne faut pas confondre les coordonnées de la fractale, et les coordonnées
+          * où est-ce qu'on va les dessiner. Le problème se pose pas quand on ne zoom pas. Mais dès qu'on zoom
+          * ces coordonnées ne sont pas liées.
          *
          * 2)
          * Pour le lol on pourrait changer la couleur de la fractale bleu / vert / rouge, et
@@ -78,19 +83,31 @@ System.out.println("calcul" + settingsModel.getCenterX() + ";" + settingsModel.g
         double it_max = 50;
 
         // The default zoom is not correct for mandelbrot, here ire the adjustments
-        double zoom = settingsModel.getZoomLevel()*40+200;
+        double zoom = settingsModel.getZoomLevel()*150+200;
 
         // MAX_X-MIN_X = fractale width
-        double fractal_width = settingsModel.getMapX(MAX_X-MIN_X);
+        double fractal_width =(MAX_X-MIN_X) * zoom;
         // MAX_Y-MIN_Y = fractale height
-        double fractal_height = settingsModel.getMapX(MAX_Y-MIN_Y);
+        double fractal_height = (MAX_Y-MIN_Y) * zoom;
+
+        /**
+         * TODO:
+         * Vérifier les methodes getMapX/Y et getViewX/Y, pour appliquer le bon décallage à xGap et yGap
+         */
+        double xGap = 0;
+        double yGap = 0;
 
         // For every pixel, we will calculate their colors according to if the suite is convergent or divergent
         // The intensity of the colors changes according to the rapidity of the suite to diverge.
-        for(int x = 0 ; x<width ; ++x){
-            for(int y = 0; y<height ; ++y){
-                double c_r = x / zoom + MIN_X;
-                double c_i = y / zoom + MIN_Y;
+        // width & height -> dimensions of the drawing area
+        for(int x = 0 ; x<fractal_width ; ++x){
+            for(int y = 0; y<fractal_height ; ++y){
+                double c_r = (x / zoom + MIN_X) + xGap;
+                double c_i = (y / zoom + MIN_Y) + yGap;
+
+                //double c_r =( x / zoom + MIN_X) + settingsModel.getMapX(settingsModel.getCenterX()); // = c_x
+                //double c_i = (y / zoom + MIN_Y) + settingsModel.getMapY(settingsModel.getCenterY()); // = c_y
+
                 double z_r = 0;
                 double z_i = 0;
                 double i = 0;
@@ -105,9 +122,10 @@ System.out.println("calcul" + settingsModel.getCenterX() + ";" + settingsModel.g
                 if(i==it_max){
                     g.setColor(Color.BLACK);
                 }else{
-                    g.setColor(new Color((int)(i*255/it_max),0,0));
+                    g.setColor(new Color(0,0,(int)(i*255/it_max)));
                 }
-                g.fillRect(x/*+settingsModel.getCenterX()*/, y/*+settingsModel.getCenterY()*/, 1, 1);
+
+                g.fillRect(x, y, 1, 1);
 
                 /** TODO:
                  * 21/11/17
@@ -125,7 +143,7 @@ System.out.println("calcul" + settingsModel.getCenterX() + ";" + settingsModel.g
                  *  Cordialement, lilian <3
                  **/
 
-                settingsController.updateProgression((x+ settingsModel.getCenterX())*(y+ settingsModel.getCenterY()),(int)((fractal_width+width)*(fractal_height+height)));
+                //settingsController.updateProgression((x+ settingsModel.getCenterX())*(y+ settingsModel.getCenterY()),(int)((fractal_width+width)*(fractal_height+height)));
             }
         }
 
