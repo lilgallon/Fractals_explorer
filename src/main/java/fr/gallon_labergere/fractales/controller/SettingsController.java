@@ -20,6 +20,18 @@ public class SettingsController {
     }
 
     /**
+     * Sets the zoom to a custom one
+     * @param zoom zoomlevel
+     */
+    public void setZoom(float zoom){
+        if(zoom<Settings.MIN_ZOOM){
+            zoom = Settings.MIN_ZOOM;
+        }else if(zoom>Settings.MAX_ZOOM){
+            zoom = Settings.MAX_ZOOM;
+        }
+        settingsModel.setZoomLevel(zoom);
+    }
+    /**
      * It zooms in according to the (x,y) point
      * @param x x point coordinate
      * @param y y point coordinate

@@ -21,7 +21,7 @@ public class Window extends JFrame {
     private Window() {
         instance = this;
 
-        settings = new Settings(1f, SettingsController.FractalType.MANDELBROT);
+        settings = new Settings(1f, null);
         settingsController = new SettingsController(settings);
 
         setMinimumSize(new Dimension(WIDTH, HEIGHT));
