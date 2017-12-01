@@ -82,31 +82,17 @@ public class MandelbrotDrawer implements IFractalDrawer {
         // Maximum number of iteration before stopping the calculation by supposing that the suite is convergent.
         double it_max = 50;
 
-        // The default zoom is not correct for mandelbrot, here ire the adjustments
-        double zoom = settingsModel.getZoomLevel()*150+200;
-
-        // MAX_X-MIN_X = fractale width
-        double fractal_width =(MAX_X-MIN_X) * zoom;
-        // MAX_Y-MIN_Y = fractale height
-        double fractal_height = (MAX_Y-MIN_Y) * zoom;
-
-        /**
-         * TODO:
-         * Vérifier les methodes getMapX/Y et getViewX/Y, pour appliquer le bon décallage à xGap et yGap
-         */
-        double xGap = 0;
-        double yGap = 0;
+        // The default zoom is not correct for mandelbrot, here are the adjustments
+        double zoom = settingsModel.getZoomLevel()*200+100;
 
         // For every pixel, we will calculate their colors according to if the suite is convergent or divergent
         // The intensity of the colors changes according to the rapidity of the suite to diverge.
         // width & height -> dimensions of the drawing area
-        for(int x = 0 ; x<fractal_width ; ++x){
-            for(int y = 0; y<fractal_height ; ++y){
-                double c_r = (x / zoom + MIN_X) + xGap;
-                double c_i = (y / zoom + MIN_Y) + yGap;
+        for(int x = 0 ; x<width ; ++x){
+            for(int y = 0; y<height ; ++y){
 
-                //double c_r =( x / zoom + MIN_X) + settingsModel.getMapX(settingsModel.getCenterX()); // = c_x
-                //double c_i = (y / zoom + MIN_Y) + settingsModel.getMapY(settingsModel.getCenterY()); // = c_y
+                double c_r = ((double)x-settingsModel.getCenterX()/2) / zoom;
+                double c_i = ((double)y-settingsModel.getCenterY()/2) / zoom;
 
                 double z_r = 0;
                 double z_i = 0;
@@ -119,7 +105,7 @@ public class MandelbrotDrawer implements IFractalDrawer {
                     ++i;
                 }while (z_r*z_r + z_i*z_i < 4 && i < it_max);
 
-                if(i==it_max){
+                if(i == it_max){
                     g.setColor(Color.BLACK);
                 }else{
                     g.setColor(new Color(0,0,(int)(i*255/it_max)));

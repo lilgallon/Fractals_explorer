@@ -27,11 +27,11 @@ public class SettingsController {
     public void zoomIn(int x, int y) {
         if (settingsModel.getZoomLevel() >= Settings.MAX_ZOOM)
             return;
-        int prevX = settingsModel.getViewX(x);
-        int prevY = settingsModel.getViewY(y);
+        float prevX = settingsModel.getViewX(x);
+        float prevY = settingsModel.getViewY(y);
         settingsModel.setZoomLevel(settingsModel.getZoomLevel() + Settings.ZOOM_STEP);
-        int newX = settingsModel.getViewX(x);
-        int newY = settingsModel.getViewY(y);
+        float newX = settingsModel.getViewX(x);
+        float newY = settingsModel.getViewY(y);
         move((int) ((newX - prevX) * settingsModel.getZoomLevel()), (int) ((newY - prevY) * settingsModel.getZoomLevel()));
     }
 
@@ -43,11 +43,11 @@ public class SettingsController {
     public void zoomOut(int x, int y) {
         if (settingsModel.getZoomLevel() <= Settings.MIN_ZOOM)
             return;
-        int prevX = settingsModel.getViewX(x);
-        int prevY = settingsModel.getViewY(y);
+        float prevX = settingsModel.getViewX(x);
+        float prevY = settingsModel.getViewY(y);
         settingsModel.setZoomLevel(settingsModel.getZoomLevel() - Settings.ZOOM_STEP);
-        int newX = settingsModel.getViewX(x);
-        int newY = settingsModel.getViewY(y);
+        float newX = settingsModel.getViewX(x);
+        float newY = settingsModel.getViewY(y);
         move((int) ((newX - prevX) * settingsModel.getZoomLevel()), (int) ((newY - prevY) * settingsModel.getZoomLevel()));
     }
 

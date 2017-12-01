@@ -37,7 +37,7 @@ public class Settings extends Observable {
      */
     public void setZoomLevel(float zoomLevel) {
         this.zoomLevel = zoomLevel;
-        fire();
+        //fire();
     }
 
     /**
@@ -65,7 +65,7 @@ public class Settings extends Observable {
      */
     public void setCenterX(int centerX) {
         this.centerX = centerX;
-        //fire();
+        fire();
     }
 
     /**
@@ -89,8 +89,8 @@ public class Settings extends Observable {
      * @param x
      * @return
      */
-    public int getViewX(int x) {
-        return (int) ((x - centerX) / zoomLevel);
+    public float getViewX(int x) {
+        return ((x - centerX) / zoomLevel);
     }
 
     /**
@@ -98,8 +98,8 @@ public class Settings extends Observable {
      * @param y
      * @return
      */
-    public int getViewY(int y) {
-        return (int) ((y - centerY) / zoomLevel);
+    public float getViewY(int y) {
+        return ((y - centerY) / zoomLevel);
     }
 
     /**
@@ -107,7 +107,7 @@ public class Settings extends Observable {
      * @param x
      * @return
      */
-    public double getMapX(double x) {
+    public float getMapX(float x) {
         return (x - centerX) * zoomLevel;
     }
 
@@ -116,7 +116,7 @@ public class Settings extends Observable {
      * @param y
      * @return
      */
-    public double getMapY(double y) {
+    public float getMapY(float y) {
         return (y - centerY) * zoomLevel;
     }
 
