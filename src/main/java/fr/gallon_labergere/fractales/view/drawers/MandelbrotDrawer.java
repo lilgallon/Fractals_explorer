@@ -10,7 +10,7 @@ public class MandelbrotDrawer implements IFractalDrawer {
     /**
      * TODO:
      * Retirer les MIN / MAX etc... ?
-     * Pour le moment pas sur, c'est peut-etre de la que vient le probleme de precision.
+     * Pour le moment pas sur
      */
 
     private final double MIN_X;
@@ -37,15 +37,17 @@ public class MandelbrotDrawer implements IFractalDrawer {
     public void draw(Graphics g, int width, int height, Settings settingsModel, SettingsController settingsController) {
 
         /**
-          * TODO:
-         * Pour le lol on pourrait changer la couleur de la fractale bleu / vert / rouge, et
-         * d'autres nuances (ça fait pro)
-         */
-
-        /**
          * TODO:
          * Grosse opti à faire : avoir un faible it_max au début, pour ensuite le faire augmenter avec le zoom.
          * En effet, pas besoin d'être très précis quand on a pas zoom, on augmentera ainsi la précision en zoomant.
+         */
+
+        /**
+         * TODO: IMPORTANT -> ZOOM
+         * Il y a un probleme dans le zoom, on le voit d'autant plus que le zoom est fort.
+         * Peu importe ce u'on fait, le zoom va zoomer au CENTRE de la FRACTALE et non pas au CENTRE de l'IMAGE
+         * Ca vient de la methode zoomIn et zoomOut, qui pour recalculer la position utilise lezoom du modele.
+         * OR, dans la fractale, on utilise pas le zoom du modele, mais on le modifie (zoom*zoom*200+100) là est le probleme.
          */
 
         // Maximum number of iteration before stopping the calculation by supposing that the suite is convergent.
@@ -60,12 +62,10 @@ public class MandelbrotDrawer implements IFractalDrawer {
          * QUand on change la résolution, il faut redessiner la fractale
          */
 
-        /**
-         * TODO:
-         * Fix zoom décentrage
-         */
         // The default zoom is not correct for mandelbrot, here are the adjustments
         double zoom = settingsModel.getZoomLevel()*settingsModel.getZoomLevel()*200+100;
+        double centerX = settingsModel.getCenterX();
+        double centerY = settingsModel.getCenterY();
 
         // For every pixel, we will calculate their colors according to if the suite is convergent or divergent
         // The intensity of the colors changes according to the rapidity of the suite to diverge.
@@ -73,8 +73,8 @@ public class MandelbrotDrawer implements IFractalDrawer {
         for(int x = 0 ; x<width ; ++x){
             for(int y = 0; y<height ; ++y){
 
-                double c_r = ((double)x-settingsModel.getCenterX()/2.0+xGap) / zoom;
-                double c_i = ((double)y-settingsModel.getCenterY()/2.0+yGap) / zoom;
+                double c_r = (x + xGap - centerX) / zoom;
+                double c_i = (y + yGap - centerY) / zoom ;
 
                 double z_r = 0;
                 double z_i = 0;
@@ -108,6 +108,7 @@ public class MandelbrotDrawer implements IFractalDrawer {
                  **/
 
                 //settingsController.updateProgression((x+ settingsModel.getCenterX())*(y+ settingsModel.getCenterY()),(int)((fractal_width+width)*(fractal_height+height)));
+
             }
         }
 

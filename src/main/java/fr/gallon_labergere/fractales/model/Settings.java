@@ -95,7 +95,7 @@ public class Settings extends Observable {
      * @param x
      * @return
      */
-    public float getViewX(int x) {
+    public float getViewX(float x) {
         return ((x - centerX) / zoomLevel);
     }
 
@@ -104,7 +104,7 @@ public class Settings extends Observable {
      * @param y
      * @return
      */
-    public float getViewY(int y) {
+    public float getViewY(float y) {
         return ((y - centerY) / zoomLevel);
     }
 

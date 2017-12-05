@@ -42,7 +42,8 @@ public class SettingsController {
         settingsModel.setZoomLevel(settingsModel.getZoomLevel() + Settings.ZOOM_STEP);
         float newX = settingsModel.getViewX(x);
         float newY = settingsModel.getViewY(y);
-        move((int) ((newX - prevX) * settingsModel.getZoomLevel()), (int) ((newY - prevY) * settingsModel.getZoomLevel()));
+        move((int) ((newX - prevX)* settingsModel.getZoomLevel()), (int) ((newY - prevY)* settingsModel.getZoomLevel()));
+
     }
 
     /**
