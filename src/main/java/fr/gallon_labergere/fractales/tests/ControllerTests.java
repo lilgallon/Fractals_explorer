@@ -97,4 +97,15 @@ public class ControllerTests {
 
     }
 
+    @Test
+    public void testIterationsUpdate(){
+        // Test min iterations change
+        controller.changeIteration(Settings.MIN_ITERATIONS-50);
+        assertEquals(modele.getIterations()==Settings.MIN_ITERATIONS,true);
+
+        // Test max iterations change
+        controller.changeIteration(Settings.MAX_ITERATIONS+50);
+        assertEquals(modele.getIterations()==Settings.MAX_ITERATIONS,true);
+    }
+
 }

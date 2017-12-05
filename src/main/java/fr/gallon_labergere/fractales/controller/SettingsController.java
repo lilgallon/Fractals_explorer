@@ -4,8 +4,6 @@ import fr.gallon_labergere.fractales.model.Settings;
 import fr.gallon_labergere.fractales.view.drawers.IFractalDrawer;
 import fr.gallon_labergere.fractales.view.drawers.MandelbrotDrawer;
 import fr.gallon_labergere.fractales.view.drawers.OtherDrawer;
-import org.omg.CORBA.DynAnyPackage.InvalidValue;
-import org.omg.CORBA.ExceptionList;
 
 public class SettingsController {
 
@@ -101,6 +99,19 @@ public class SettingsController {
         // Each 10% we will update.
         if(progress>settingsModel.getProgression())
             settingsModel.setProgression(progress);
+    }
+
+    /**
+     * Used to change the number of iteration i.e. precision
+     * @param val
+     */
+    public void changeIteration(int val){
+        if(val<Settings.MIN_ITERATIONS){
+            val = Settings.MIN_ITERATIONS;
+        }else if(val>Settings.MAX_ITERATIONS){
+            val = Settings.MAX_ITERATIONS;
+        }
+        settingsModel.setIterations(val);
     }
 
     /**

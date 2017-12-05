@@ -9,12 +9,15 @@ public class Settings extends Observable {
     public static final float MIN_ZOOM = 0.5f;
     public static final float MAX_ZOOM = 50f;
     public static final float ZOOM_STEP = 0.5f;
+    public static final int   MIN_ITERATIONS = 30;
+    public static final int   MAX_ITERATIONS = 1000;
 
     private float zoomLevel;
     private SettingsController.FractalType fractalType;
     private int centerX;
     private int centerY;
     private int progression;
+    private int iterations;
 
     public Settings(float zoomLevel, SettingsController.FractalType fractalType) {
         this.zoomLevel = zoomLevel;
@@ -22,6 +25,7 @@ public class Settings extends Observable {
         this.centerX = 0;
         this.centerY = 0;
         this.progression = 0;
+        this.iterations = 0;
     }
 
     /**
@@ -146,4 +150,11 @@ public class Settings extends Observable {
         notifyObservers();
     }
 
+    public int getIterations() {
+        return iterations;
+    }
+
+    public void setIterations(int iterations) {
+        this.iterations = iterations;
+    }
 }
