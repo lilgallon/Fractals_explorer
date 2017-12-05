@@ -57,10 +57,15 @@ public class MandelbrotDrawer implements IFractalDrawer {
 
         /**
          * TODO:
-         * Améliorer le zoom (ça vaudrait mieux un zoom *= 2) parce que là ça n'a pas tellement de sens
+         * QUand on change la résolution, il faut redessiner la fractale
+         */
+
+        /**
+         * TODO:
+         * Fix zoom décentrage
          */
         // The default zoom is not correct for mandelbrot, here are the adjustments
-        double zoom = settingsModel.getZoomLevel()*200+100;
+        double zoom = settingsModel.getZoomLevel()*settingsModel.getZoomLevel()*200+100;
 
         // For every pixel, we will calculate their colors according to if the suite is convergent or divergent
         // The intensity of the colors changes according to the rapidity of the suite to diverge.
@@ -68,8 +73,8 @@ public class MandelbrotDrawer implements IFractalDrawer {
         for(int x = 0 ; x<width ; ++x){
             for(int y = 0; y<height ; ++y){
 
-                double c_r = ((double)x-settingsModel.getCenterX()/2+xGap) / zoom;
-                double c_i = ((double)y-settingsModel.getCenterY()/2+yGap) / zoom;
+                double c_r = ((double)x-settingsModel.getCenterX()/2.0+xGap) / zoom;
+                double c_i = ((double)y-settingsModel.getCenterY()/2.0+yGap) / zoom;
 
                 double z_r = 0;
                 double z_i = 0;
