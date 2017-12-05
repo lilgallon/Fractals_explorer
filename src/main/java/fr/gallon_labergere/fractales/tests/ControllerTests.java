@@ -108,4 +108,19 @@ public class ControllerTests {
         assertEquals(modele.getIterations()==Settings.MAX_ITERATIONS,true);
     }
 
+    @Test
+    public void testColorationMode(){
+        // test default is set to ORIGINAL
+        assertEquals(modele.getColorationMode()==SettingsController.ColorationMode.ORIGINAL,true);
+
+        // Test change coloration mode
+        controller.changeColorationMode(SettingsController.ColorationMode.BLUE);
+        assertEquals(modele.getColorationMode()== SettingsController.ColorationMode.BLUE,true);
+
+        // Test exception
+        // TODO:
+        // controller.changeColorationMode(NULL);
+        // il faut check qu'uen exception est lancée car on ne peut pas mettre null ici
+    }
+
 }

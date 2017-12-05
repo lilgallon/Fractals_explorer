@@ -5,8 +5,6 @@ import fr.gallon_labergere.fractales.model.Settings;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.MouseAdapter;
@@ -18,6 +16,8 @@ public class ControlPanel extends SettingsObserver {
     private JLabel zoomLabel;
     private JProgressBar progressBar;
     private JSlider iterationsSlider;
+    private JLabel iterationsLabel;
+    private JComboBox colorationModeSelection;
 
     public ControlPanel(SettingsController controller) {
         super(controller);
@@ -72,17 +72,25 @@ public class ControlPanel extends SettingsObserver {
         iterationsSlider = new JSlider();
         iterationsSlider.setMaximum(Settings.MAX_ITERATIONS);
         iterationsSlider.setMinimum(Settings.MIN_ITERATIONS);
-        iterationsSlider.setMajorTickSpacing(25);
-        iterationsSlider.setMinorTickSpacing(5);
-        iterationsSlider.setPaintTicks(true);
-        final JLabel iterationsLabel = new JLabel("[" + getSettings().getIterations() + "] Iterations");
+        iterationsLabel = new JLabel("[" + getSettings().getIterations() + "] Iterations");
         iterationsSlider.addChangeListener(e -> {
-            int val = iterationsSlider.getValue();
-            controller.changeIteration(val);
+            controller.changeIteration(iterationsSlider.getValue());
             iterationsLabel.setText("[" + getSettings().getIterations() + "] Iterations");
         });
         grid[5][0].add(iterationsLabel);
         grid[5][1].add(iterationsSlider);
+
+        grid[6][0].add(new JLabel("Mode de coloration"));
+        grid[6][1].add(colorationModeSelection = new JComboBox<>(SettingsController.ColorationMode.values()));
+        colorationModeSelection.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED)
+                getSettingsController().changeColorationMode(
+                        (SettingsController.ColorationMode) e.getItem()
+                );
+        });
+        colorationModeSelection.setSelectedItem(SettingsController.ColorationMode.ORIGINAL);
+
+
 
     }
 

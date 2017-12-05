@@ -79,7 +79,9 @@ public class ViewPanel extends SettingsObserver {
      */
     @Override
     public void paintComponents(Graphics g) {
-        g.fillRect(0, 0, getWidth(), getHeight());
-        getSettings().getFractalType().getDrawer().draw(g, getWidth(), getHeight(), getSettings(), getSettingsController());
+        //g.fillRect(0, 0, getWidth(), getHeight());
+        if(getSettings().getFractalType()!=null){
+            getSettings().getFractalType().getDrawer().draw(g, getWidth(), getHeight(), getSettings(), getSettingsController());
+        }
     }
 }

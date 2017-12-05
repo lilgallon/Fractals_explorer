@@ -3,7 +3,6 @@ package fr.gallon_labergere.fractales.view.drawers;
 import fr.gallon_labergere.fractales.controller.SettingsController;
 import fr.gallon_labergere.fractales.model.Settings;
 
-import javax.swing.*;
 import java.awt.*;
 
 public class MandelbrotDrawer implements IFractalDrawer {
@@ -50,7 +49,11 @@ public class MandelbrotDrawer implements IFractalDrawer {
          */
 
         // Maximum number of iteration before stopping the calculation by supposing that the suite is convergent.
-        double it_max = 50;
+        double it_max = settingsModel.getIterations();
+
+        // Used to adjust the fractal initial position
+        double xGap = -500;
+        double yGap = -300;
 
         /**
          * TODO:
@@ -65,8 +68,8 @@ public class MandelbrotDrawer implements IFractalDrawer {
         for(int x = 0 ; x<width ; ++x){
             for(int y = 0; y<height ; ++y){
 
-                double c_r = ((double)x-settingsModel.getCenterX()/2) / zoom;
-                double c_i = ((double)y-settingsModel.getCenterY()/2) / zoom;
+                double c_r = ((double)x-settingsModel.getCenterX()/2+xGap) / zoom;
+                double c_i = ((double)y-settingsModel.getCenterY()/2+yGap) / zoom;
 
                 double z_r = 0;
                 double z_i = 0;
@@ -79,12 +82,8 @@ public class MandelbrotDrawer implements IFractalDrawer {
                     ++i;
                 }while (z_r*z_r + z_i*z_i < 4 && i < it_max);
 
-                if(i == it_max){
-                    g.setColor(Color.BLACK);
-                }else{
-                    g.setColor(new Color(0,0,(int)(i*255/it_max)));
-                }
 
+                g.setColor(getColor((int)i,(int)it_max,settingsModel.getColorationMode()));
                 g.fillRect(x, y, 1, 1);
 
                 /** TODO:
@@ -113,4 +112,81 @@ public class MandelbrotDrawer implements IFractalDrawer {
         g.drawLine(-1000, settingsModel.getCenterY(), 1000, settingsModel.getCenterY());
     }
 
+    /**
+     * Get the color of the pixel according to the number of iterations.
+     * Method #1 inspired by https://stackoverflow.com/questions/16500656/which-color-gradient-is-used-to-color-mandelbrot-in-wikipedia#25816111
+     * Method #x (other) is a basic one with a blue gradient
+     * @param iterations
+     * @return
+     */
+    private Color getColor(int iterations, int iterations_max, SettingsController.ColorationMode colorMode){
+        Color color;
+
+        if(colorMode== SettingsController.ColorationMode.ORIGINAL) {
+            int iterations_fixed = iterations % 16;
+            switch (iterations_fixed) {
+                case 0:
+                    color = new Color(60, 30, 15);
+                    break;
+                case 1:
+                    color = new Color(25, 7, 26);
+                    break;
+                case 2:
+                    color = new Color(9, 1, 47);
+                    break;
+                case 3:
+                    color = new Color(4, 4, 73);
+                    break;
+                case 4:
+                    color = new Color(0, 7, 100);
+                    break;
+                case 5:
+                    color = new Color(12, 44, 138);
+                    break;
+                case 6:
+                    color = new Color(24, 82, 117);
+                    break;
+                case 7:
+                    color = new Color(57, 125, 209);
+                    break;
+                case 8:
+                    color = new Color(134, 181, 229);
+                    break;
+                case 9:
+                    color = new Color(211, 236, 248);
+                    break;
+                case 10:
+                    color = new Color(241, 233, 191);
+                    break;
+                case 11:
+                    color = new Color(248, 201, 95);
+                    break;
+                case 12:
+                    color = new Color(255, 170, 0);
+                    break;
+                case 13:
+                    color = new Color(204, 128, 0);
+                    break;
+                case 14:
+                    color = new Color(153, 87, 0);
+                    break;
+                case 15:
+                    color = new Color(106, 52, 3);
+                    break;
+                default:
+                    color = Color.black;
+                    break;
+            }
+        }else if(colorMode==SettingsController.ColorationMode.BLUE){
+            if(iterations==iterations_max){
+                color = Color.black;
+            }else{
+                color = new Color(0,0,(iterations*255)/iterations_max);
+            }
+        }else{
+            // TODO: Exception
+            color = Color.red;
+        }
+    return color;
+    }
 }

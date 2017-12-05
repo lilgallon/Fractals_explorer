@@ -114,6 +114,10 @@ public class SettingsController {
         settingsModel.setIterations(val);
     }
 
+    public void changeColorationMode(ColorationMode mode){
+       settingsModel.setColorationMode(mode);
+    }
+
     /**
      * Reset the bar progression
      */
@@ -138,5 +142,9 @@ public class SettingsController {
         public IFractalDrawer getDrawer() {
             return drawer;
         }
+    }
+
+    public enum ColorationMode {
+        ORIGINAL, BLUE
     }
 }

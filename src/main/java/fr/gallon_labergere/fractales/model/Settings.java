@@ -9,8 +9,8 @@ public class Settings extends Observable {
     public static final float MIN_ZOOM = 0.5f;
     public static final float MAX_ZOOM = 50f;
     public static final float ZOOM_STEP = 0.5f;
-    public static final int   MIN_ITERATIONS = 30;
-    public static final int   MAX_ITERATIONS = 1000;
+    public static final int   MIN_ITERATIONS = 25;
+    public static final int   MAX_ITERATIONS = 500;
 
     private float zoomLevel;
     private SettingsController.FractalType fractalType;
@@ -18,6 +18,7 @@ public class Settings extends Observable {
     private int centerY;
     private int progression;
     private int iterations;
+    private SettingsController.ColorationMode colorationMode;
 
     public Settings(float zoomLevel, SettingsController.FractalType fractalType) {
         this.zoomLevel = zoomLevel;
@@ -25,7 +26,8 @@ public class Settings extends Observable {
         this.centerX = 0;
         this.centerY = 0;
         this.progression = 0;
-        this.iterations = 0;
+        this.iterations = MIN_ITERATIONS;
+        this.colorationMode = SettingsController.ColorationMode.ORIGINAL;
     }
 
     /**
@@ -156,5 +158,15 @@ public class Settings extends Observable {
 
     public void setIterations(int iterations) {
         this.iterations = iterations;
+        fire();
+    }
+
+    public SettingsController.ColorationMode getColorationMode() {
+        return colorationMode;
+    }
+
+    public void setColorationMode(SettingsController.ColorationMode colorationMode) {
+        this.colorationMode = colorationMode;
+        fire();
     }
 }
