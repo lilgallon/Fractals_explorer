@@ -88,15 +88,15 @@ public class MandelbrotDrawer implements IFractalDrawer {
                 double z_i = 0;
                 double i = 0;
 
-                do{
+                do {
                     double tmp = z_r;                   // Ici on stocke z_r
-                    z_r = z_r * z_r - z_i*z_i + c_r;    // Ici on calcule z_r au rang n+1
+                    z_r = z_r * z_r - z_i * z_i + c_r;    // Ici on calcule z_r au rang n+1
                     z_i = 2 * z_i * tmp + c_i;
                     ++i;
-                }while (z_r*z_r + z_i*z_i < 4 && i < it_max);
+                } while (z_r * z_r + z_i * z_i < 4 && i < it_max);
 
 
-                g.setColor(getColor((int)i,settingsModel.getColorationMode()));
+                g.setColor(getColor((int)i, settingsModel.getColorationMode()));
                 g.fillRect(x, y, 1, 1);
 
                 /** TODO: barre de progression
@@ -171,7 +171,7 @@ public class MandelbrotDrawer implements IFractalDrawer {
     private Color getColor(int iterations, SettingsController.ColorationMode colorMode){
         Color color;
 
-        if(colorMode== SettingsController.ColorationMode.ORIGINAL) {
+        if ( colorMode == SettingsController.ColorationMode.ORIGINAL) {
             int iterations_fixed = iterations % 16;
             switch (iterations_fixed) {
                 case 0:
@@ -226,15 +226,11 @@ public class MandelbrotDrawer implements IFractalDrawer {
                     color = Color.black;
                     break;
             }
-        }else if(colorMode==SettingsController.ColorationMode.BLUE){
-            if(iterations==MAX_ITERATIONS){
-                color = Color.black;
-            }else{
-                color = new Color(0,0,(iterations*255)/MAX_ITERATIONS);
-            }
-        }else{
-            throw new NullPointerException("It should not happen! An exception must have been thrown before in the colorset method");
-        }
+        } else if (colorMode == SettingsController.ColorationMode.BLUE) {
+            color = (iterations == MAX_ITERATIONS)
+                    ? Color.black
+                    : new Color(0f, 0f, (float)iterations / MAX_ITERATIONS);
+        } else throw new NullPointerException("It should not happen! An exception must have been thrown before in the colorset method");
     return color;
     }
 }
