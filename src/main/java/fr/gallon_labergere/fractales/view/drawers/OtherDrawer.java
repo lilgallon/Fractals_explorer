@@ -79,7 +79,6 @@ public class OtherDrawer implements IFractalDrawer {
                 }while (module(fractal_function(z))>tolerance && it < settingsModel.getIterations());
 
                 g.setColor(new Color(it%4*64, it%8*32,it%16*16));
-
                 // z -> oo
                 if(it==MAX_ITERATIONS) g.setColor(Color.red);
 

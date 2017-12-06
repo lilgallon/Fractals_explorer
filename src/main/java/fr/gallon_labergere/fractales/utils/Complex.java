@@ -99,7 +99,7 @@ public class Complex {
      * @return
      */
     public double getModule(){
-        return Math.sqrt(real*real+imag*imag);
+        return Math.sqrt(real*real + imag*imag);
     }
 
     /**
