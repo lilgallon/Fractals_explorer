@@ -6,11 +6,11 @@ import java.util.Observable;
 
 public class Settings extends Observable {
 
-    public static final float MIN_ZOOM = 0.5f;
-    public static final float MAX_ZOOM = 50f;
-    public static final float ZOOM_STEP = 0.5f;
-    public static final int   MIN_ITERATIONS = 25;
-    public static final int   MAX_ITERATIONS = 500;
+   // public static final float MIN_ZOOM = 0.5f;
+   // public static final float MAX_ZOOM = 100000f;
+   // public static final float ZOOM_MULTIPLICATOR = 1.2f;
+   // public static final int   MIN_ITERATIONS = 25;
+   // public static final int   MAX_ITERATIONS = 500;
 
     private float zoomLevel;
     private SettingsController.FractalType fractalType;
@@ -21,12 +21,13 @@ public class Settings extends Observable {
     private SettingsController.ColorationMode colorationMode;
 
     public Settings(float zoomLevel, SettingsController.FractalType fractalType) {
+        if(fractalType==null){throw new NullPointerException("The fractalType must be defined!");}
         this.zoomLevel = zoomLevel;
         this.fractalType = fractalType;
         this.centerX = 0;
         this.centerY = 0;
         this.progression = 0;
-        this.iterations = MIN_ITERATIONS;
+        this.iterations = fractalType.getDrawer().getInitialIterations();
         this.colorationMode = SettingsController.ColorationMode.ORIGINAL;
     }
 
@@ -71,7 +72,7 @@ public class Settings extends Observable {
      */
     public void setCenterX(int centerX) {
         this.centerX = centerX;
-        fire();
+        //fire();
     }
 
     /**
@@ -87,11 +88,11 @@ public class Settings extends Observable {
      */
     public void setCenterY(int centerY) {
         this.centerY = centerY;
-        //fire();
+        fire();
     }
 
     /**
-     * TODO: precise description
+     * Convert x to the map (fractale) coordinates
      * @param x
      * @return
      */
@@ -100,7 +101,7 @@ public class Settings extends Observable {
     }
 
     /**
-     * TODO: precise description
+     * Convert y to the map (fractale) coordinates
      * @param y
      * @return
      */
@@ -109,7 +110,7 @@ public class Settings extends Observable {
     }
 
     /**
-     * TODO: precise description
+     * Convert x to the view coordinates
      * @param x
      * @return
      */
@@ -118,7 +119,7 @@ public class Settings extends Observable {
     }
 
     /**
-     * TODO: precise description
+     * Convert y to the view coordinates
      * @param y
      * @return
      */

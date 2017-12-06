@@ -22,10 +22,10 @@ public class SettingsController {
      * @param zoom zoomlevel
      */
     public void setZoom(float zoom){
-        if(zoom<Settings.MIN_ZOOM){
-            zoom = Settings.MIN_ZOOM;
-        }else if(zoom>Settings.MAX_ZOOM){
-            zoom = Settings.MAX_ZOOM;
+        if(zoom<settingsModel.getFractalType().getDrawer().getMinZoom()){
+            zoom = settingsModel.getFractalType().getDrawer().getMinZoom();
+        }else if(zoom>settingsModel.getFractalType().getDrawer().getMaxZoom()){
+            zoom = settingsModel.getFractalType().getDrawer().getMaxZoom();
         }
         settingsModel.setZoomLevel(zoom);
     }
@@ -35,14 +35,14 @@ public class SettingsController {
      * @param y y point coordinate
      */
     public void zoomIn(int x, int y) {
-        if (settingsModel.getZoomLevel() >= Settings.MAX_ZOOM)
+        if (settingsModel.getZoomLevel()*settingsModel.getFractalType().getDrawer().getZoomFactor() >= settingsModel.getFractalType().getDrawer().getMaxZoom())
             return;
         float prevX = settingsModel.getViewX(x);
         float prevY = settingsModel.getViewY(y);
-        settingsModel.setZoomLevel(settingsModel.getZoomLevel() + Settings.ZOOM_STEP);
+        settingsModel.setZoomLevel(settingsModel.getZoomLevel() * settingsModel.getFractalType().getDrawer().getZoomFactor());
         float newX = settingsModel.getViewX(x);
         float newY = settingsModel.getViewY(y);
-        move((int) ((newX - prevX)* settingsModel.getZoomLevel()), (int) ((newY - prevY)* settingsModel.getZoomLevel()));
+        move((int) ((newX - prevX) / settingsModel.getZoomLevel()), (int) ((newY - prevY) / settingsModel.getZoomLevel()));
 
     }
 
@@ -52,11 +52,11 @@ public class SettingsController {
      * @param y y point coordinate
      */
     public void zoomOut(int x, int y) {
-        if (settingsModel.getZoomLevel() <= Settings.MIN_ZOOM)
+        if (settingsModel.getZoomLevel()/settingsModel.getFractalType().getDrawer().getZoomFactor() <= settingsModel.getFractalType().getDrawer().getMinZoom())
             return;
         float prevX = settingsModel.getViewX(x);
         float prevY = settingsModel.getViewY(y);
-        settingsModel.setZoomLevel(settingsModel.getZoomLevel() - Settings.ZOOM_STEP);
+        settingsModel.setZoomLevel(settingsModel.getZoomLevel() / settingsModel.getFractalType().getDrawer().getZoomFactor());
         float newX = settingsModel.getViewX(x);
         float newY = settingsModel.getViewY(y);
         move((int) ((newX - prevX) * settingsModel.getZoomLevel()), (int) ((newY - prevY) * settingsModel.getZoomLevel()));
@@ -67,6 +67,7 @@ public class SettingsController {
      * @param fractalType
      */
     public void setFractalType(FractalType fractalType) {
+        if(fractalType==null) throw  new NullPointerException("The fractal type must be defined!");
         settingsModel.setFractalType(fractalType);
     }
 
@@ -107,15 +108,16 @@ public class SettingsController {
      * @param val
      */
     public void changeIteration(int val){
-        if(val<Settings.MIN_ITERATIONS){
-            val = Settings.MIN_ITERATIONS;
-        }else if(val>Settings.MAX_ITERATIONS){
-            val = Settings.MAX_ITERATIONS;
+        if(val<settingsModel.getFractalType().getDrawer().getMinIterations()){
+            val = settingsModel.getFractalType().getDrawer().getMinIterations();
+        }else if(val>settingsModel.getFractalType().getDrawer().getMaxIterations()){
+            val = settingsModel.getFractalType().getDrawer().getMaxIterations();
         }
         settingsModel.setIterations(val);
     }
 
     public void changeColorationMode(ColorationMode mode){
+       if(mode==null) throw new NullPointerException("The color mode must be defined!");
        settingsModel.setColorationMode(mode);
     }
 
@@ -143,6 +145,7 @@ public class SettingsController {
         public IFractalDrawer getDrawer() {
             return drawer;
         }
+
     }
 
     public enum ColorationMode {

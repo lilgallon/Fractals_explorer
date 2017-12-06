@@ -8,7 +8,7 @@ import java.awt.*;
 public class MandelbrotDrawer implements IFractalDrawer {
 
     /**
-     * TODO:
+     * TODO: remarque sur des attributs inutiles ou pas?
      * Retirer les MIN / MAX etc... ?
      * Pour le moment pas sur
      */
@@ -17,6 +17,15 @@ public class MandelbrotDrawer implements IFractalDrawer {
     private final double MAX_X;
     private final double MIN_Y;
     private final double MAX_Y;
+
+    private final float INITIAL_ZOOM = 300;
+    private final float MIN_ZOOM = 1f;
+    private final float MAX_ZOOM = 10000f;
+    private final float ZOOM_MULTIPLICATOR = 1.2f;
+
+    private final int INITIAL_ITERATIONS = 25;
+    private final int MIN_ITERATIONS = 25;
+    private final int MAX_ITERATIONS = 500;
 
     public MandelbrotDrawer(double minX, double maxX, double minY, double maxY) {
         MIN_X = minX;
@@ -37,7 +46,7 @@ public class MandelbrotDrawer implements IFractalDrawer {
     public void draw(Graphics g, int width, int height, Settings settingsModel, SettingsController settingsController) {
 
         /**
-         * TODO:
+         * TODO: optimisation avec les iterations
          * Grosse opti à faire : avoir un faible it_max au début, pour ensuite le faire augmenter avec le zoom.
          * En effet, pas besoin d'être très précis quand on a pas zoom, on augmentera ainsi la précision en zoomant.
          */
@@ -45,9 +54,8 @@ public class MandelbrotDrawer implements IFractalDrawer {
         /**
          * TODO: IMPORTANT -> ZOOM
          * Il y a un probleme dans le zoom, on le voit d'autant plus que le zoom est fort.
-         * Peu importe ce u'on fait, le zoom va zoomer au CENTRE de la FRACTALE et non pas au CENTRE de l'IMAGE
-         * Ca vient de la methode zoomIn et zoomOut, qui pour recalculer la position utilise lezoom du modele.
-         * OR, dans la fractale, on utilise pas le zoom du modele, mais on le modifie (zoom*zoom*200+100) là est le probleme.
+         * Peu importe ce qu'on fait, le zoom va zoomer au CENTRE de la FRACTALE et non pas au CENTRE de l'IMAGE
+         * Je sais pas trop d'où ça vient, c'est surement la méthode zoomIn et zoomOut qui move le centre pas correctement
          */
 
         // Maximum number of iteration before stopping the calculation by supposing that the suite is convergent.
@@ -58,12 +66,12 @@ public class MandelbrotDrawer implements IFractalDrawer {
         double yGap = -300;
 
         /**
-         * TODO:
+         * TODO: change resolution => redraw
          * QUand on change la résolution, il faut redessiner la fractale
          */
 
         // The default zoom is not correct for mandelbrot, here are the adjustments
-        double zoom = settingsModel.getZoomLevel()*settingsModel.getZoomLevel()*200+100;
+        double zoom = settingsModel.getZoomLevel();//*settingsModel.getZoomLevel()*200+100;
         double centerX = settingsModel.getCenterX();
         double centerY = settingsModel.getCenterY();
 
@@ -88,21 +96,21 @@ public class MandelbrotDrawer implements IFractalDrawer {
                 }while (z_r*z_r + z_i*z_i < 4 && i < it_max);
 
 
-                g.setColor(getColor((int)i,(int)it_max,settingsModel.getColorationMode()));
+                g.setColor(getColor((int)i,settingsModel.getColorationMode()));
                 g.fillRect(x, y, 1, 1);
 
-                /** TODO:
+                /** TODO: barre de progression
                  * 21/11/17
                  * Implement progressBar
                  *
                  * Note: FR psq c'est mieux
-                 *  Il faut faire attention, on ne peut pas mettre la progression dans le modele
+                 *  Il faut faire attention, on ne peut pas mettre la progression dans le model
                  *  parce que dans ce cas, dès que la progression change, on fire un event de modification
                  *  et, ça demande de redessiner la vue, et puis ça recommence en boucle et puis stackoverflow
                  *  exception si l'ordi ne crash pas avant.
                  *  C'est pourquoi il faudrait implémenter la barre de progression differemment (si on l'implem)
                  *  Le code est pret, faut juste savoir la maniere dont on va le faire pour le faire de la moins
-                 *  moche maniere possible. Sachant que de ne pas faire ça dans le modele quand on fait du MVC c'est
+                 *  moche maniere possible. Sachant que de ne pas faire ça dans le model quand on fait du MVC c'est
                  *  de l'irrespect.
                  *  Cordialement, lilian <3
                  **/
@@ -118,6 +126,41 @@ public class MandelbrotDrawer implements IFractalDrawer {
         g.drawLine(-1000, settingsModel.getCenterY(), 1000, settingsModel.getCenterY());
     }
 
+    @Override
+    public float getInitialZoom() {
+        return INITIAL_ZOOM;
+    }
+
+    @Override
+    public float getMinZoom() {
+        return MIN_ZOOM;
+    }
+
+    @Override
+    public float getMaxZoom() {
+        return MAX_ZOOM;
+    }
+
+    @Override
+    public float getZoomFactor() {
+        return ZOOM_MULTIPLICATOR;
+    }
+
+    @Override
+    public int getInitialIterations() {
+        return INITIAL_ITERATIONS;
+    }
+
+    @Override
+    public int getMaxIterations() {
+        return MAX_ITERATIONS;
+    }
+
+    @Override
+    public int getMinIterations() {
+        return MIN_ITERATIONS;
+    }
+
     /**
      * Get the color of the pixel according to the number of iterations.
      * Method #1 inspired by https://stackoverflow.com/questions/16500656/which-color-gradient-is-used-to-color-mandelbrot-in-wikipedia#25816111
@@ -125,7 +168,7 @@ public class MandelbrotDrawer implements IFractalDrawer {
      * @param iterations
      * @return
      */
-    private Color getColor(int iterations, int iterations_max, SettingsController.ColorationMode colorMode){
+    private Color getColor(int iterations, SettingsController.ColorationMode colorMode){
         Color color;
 
         if(colorMode== SettingsController.ColorationMode.ORIGINAL) {
@@ -184,14 +227,13 @@ public class MandelbrotDrawer implements IFractalDrawer {
                     break;
             }
         }else if(colorMode==SettingsController.ColorationMode.BLUE){
-            if(iterations==iterations_max){
+            if(iterations==MAX_ITERATIONS){
                 color = Color.black;
             }else{
-                color = new Color(0,0,(iterations*255)/iterations_max);
+                color = new Color(0,0,(iterations*255)/MAX_ITERATIONS);
             }
         }else{
-            // TODO: Exception
-            color = Color.red;
+            throw new NullPointerException("It should not happen! An exception must have been thrown before in the colorset method");
         }
     return color;
     }

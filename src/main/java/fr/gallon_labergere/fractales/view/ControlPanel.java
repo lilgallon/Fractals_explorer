@@ -1,7 +1,6 @@
 package fr.gallon_labergere.fractales.view;
 
 import fr.gallon_labergere.fractales.controller.SettingsController;
-import fr.gallon_labergere.fractales.model.Settings;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -46,7 +45,7 @@ public class ControlPanel extends SettingsObserver {
         fractalTypeSelection.setSelectedItem(null);
 
         grid[2][0].add(new JLabel("Zoom"));
-        grid[2][1].add(zoomLabel = new JLabel("(x" + getSettings().getZoomLevel() + ")"));
+        grid[2][1].add(zoomLabel = new JLabel("(x" + Float.toString((getSettings().getZoomLevel()-getSettings().getFractalType().getDrawer().getInitialZoom())/getSettings().getZoomLevel()-getSettings().getFractalType().getDrawer().getZoomFactor()) + ")"));
         JButton zoomOut = new JButton("-");
         zoomOut.addMouseListener(new MouseAdapter() {
             @Override
@@ -70,8 +69,8 @@ public class ControlPanel extends SettingsObserver {
         grid[4][1].add(progressBar);
 
         iterationsSlider = new JSlider();
-        iterationsSlider.setMaximum(Settings.MAX_ITERATIONS);
-        iterationsSlider.setMinimum(Settings.MIN_ITERATIONS);
+        iterationsSlider.setMaximum(getSettings().getFractalType().getDrawer().getMaxIterations());
+        iterationsSlider.setMinimum(getSettings().getFractalType().getDrawer().getMinIterations());
         iterationsLabel = new JLabel("[" + getSettings().getIterations() + "] Iterations");
         iterationsSlider.addChangeListener(e -> {
             controller.changeIteration(iterationsSlider.getValue());

@@ -21,8 +21,9 @@ public class Window extends JFrame {
     private Window() {
         instance = this;
 
-        settings = new Settings(1f, null);
+        settings = new Settings(1f, SettingsController.FractalType.MANDELBROT);
         settingsController = new SettingsController(settings);
+        settingsController.setZoom(settings.getFractalType().getDrawer().getInitialZoom());
 
         setMinimumSize(new Dimension(WIDTH, HEIGHT));
         setTitle("Projet Java - Fractales - Lilian Gallon, Rémi Labergère");

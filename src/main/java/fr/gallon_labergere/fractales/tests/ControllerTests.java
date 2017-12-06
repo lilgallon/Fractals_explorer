@@ -11,72 +11,76 @@ import static org.junit.Assert.*;
  */
 public class ControllerTests {
 
-    private Settings modele;
+    private Settings model;
     private SettingsController controller;
 
 
     @Before
     public void init(){
-        modele = new Settings(Settings.MIN_ZOOM, null);
-        controller = new SettingsController(modele);
+        model = new Settings(0f, SettingsController.FractalType.MANDELBROT);
+        controller = new SettingsController(model);
+        model.setZoomLevel(model.getFractalType().getDrawer().getMinZoom());
     }
 
     @Test
     public void testZoom() {
+        float min_zoom = model.getFractalType().getDrawer().getMinZoom();
+        float max_zoom = model.getFractalType().getDrawer().getMaxZoom();
+        float zoom_factor = model.getFractalType().getDrawer().getZoomFactor();
 
         // Test zoom initialization
-        assertEquals(Settings.MIN_ZOOM,modele.getZoomLevel(),0f);
+        assertEquals(min_zoom, model.getZoomLevel(),0f);
 
         // Test zoom increment
         controller.zoomIn(0,0);
-        assertEquals(Settings.ZOOM_STEP +Settings.MIN_ZOOM,modele.getZoomLevel(),0f);
+        assertEquals(zoom_factor * min_zoom, model.getZoomLevel(),0f);
 
         // Test zoom decrement
         controller.zoomOut(0,0);
-        assertEquals(Settings.MIN_ZOOM,modele.getZoomLevel(),0f);
+        assertEquals(min_zoom<= model.getZoomLevel(),true);
 
         // Test zoom max (zoomIn)
-        for(int i = 0; i< Settings.MAX_ZOOM / Settings.ZOOM_STEP +1 ; ++i)
+        for(int i = 0; i< max_zoom / zoom_factor +1 ; ++i)
             controller.zoomIn(0,0);
-        assertEquals(Settings.MAX_ZOOM,modele.getZoomLevel(),0f);
+        assertEquals(max_zoom>=model.getZoomLevel(),true);
 
         // Test zoom min (zoomOut)
-        for(int i = 0; i< Settings.MAX_ZOOM / Settings.ZOOM_STEP +1 ; ++i)
+        for(int i = 0; i< max_zoom / zoom_factor +1 ; ++i)
             controller.zoomOut(0,0);
-        assertEquals(Settings.MIN_ZOOM,modele.getZoomLevel(),0f);
+        assertEquals(min_zoom<=model.getZoomLevel(),true);
 
         // Test zoom min (setZoom)
-        controller.setZoom(Settings.MIN_ZOOM-5);
-        assertEquals(modele.getZoomLevel(),Settings.MIN_ZOOM,0f);
-        controller.setZoom(Settings.MAX_ZOOM+5);
-        assertEquals(modele.getZoomLevel(),Settings.MAX_ZOOM,0f);
-        controller.setZoom(Settings.MIN_ZOOM+5);
-        assertEquals(modele.getZoomLevel(),Settings.MIN_ZOOM+5,0f);
+        controller.setZoom(min_zoom-5);
+        assertEquals(model.getZoomLevel(),min_zoom,0f);
+        controller.setZoom(max_zoom+5);
+        assertEquals(model.getZoomLevel(),max_zoom,0f);
+        controller.setZoom(min_zoom+5);
+        assertEquals(model.getZoomLevel(),min_zoom+5,0f);
     }
 
     @Test
     public void testChangeFractal(){
-        // By default, no fractal selected
-        assertEquals(modele.getFractalType()==null,true);
+        // By default, mandelbrot is selected
+        assertEquals(model.getFractalType()==SettingsController.FractalType.MANDELBROT,true);
 
         // Change fractal
-        controller.setFractalType(SettingsController.FractalType.MANDELBROT);
-        assertEquals(modele.getFractalType()== SettingsController.FractalType.MANDELBROT,true);
+        controller.setFractalType(SettingsController.FractalType.OTHER);
+        assertEquals(model.getFractalType()== SettingsController.FractalType.OTHER,true);
 
     }
 
     @Test
     public void testCoordinateMapping(){
         // Test default coordinates
-        assertEquals(modele.getCenterX()==0f,true);
-        assertEquals(modele.getCenterY()==0f,true);
+        assertEquals(model.getCenterX()==0f,true);
+        assertEquals(model.getCenterY()==0f,true);
 
         // Test mapping methods
         // Basic tests
-        assertEquals(modele.getMapX(modele.getCenterX())==0f,true);
-        assertEquals(modele.getMapY(modele.getCenterY())==0f,true);
-        assertEquals(modele.getViewY(modele.getCenterY())==0f,true);
-        assertEquals(modele.getViewX(modele.getCenterY())==0f,true);
+        assertEquals(model.getMapX(model.getCenterX())==0f,true);
+        assertEquals(model.getMapY(model.getCenterY())==0f,true);
+        assertEquals(model.getViewY(model.getCenterY())==0f,true);
+        assertEquals(model.getViewX(model.getCenterY())==0f,true);
 
         // Advanced tests
         // Move
@@ -84,43 +88,70 @@ public class ControllerTests {
         final int DX = 5;
         final int DY = 10;
         controller.move(DX,DY);
-        assertEquals(modele.getCenterX()==DX,true);
-        assertEquals(modele.getCenterY()==DY,true);
+        assertEquals(model.getCenterX()==DX,true);
+        assertEquals(model.getCenterY()==DY,true);
 
         // Mapping
         final int X = 5;
         final int Y = 10;
-        assertEquals(modele.getMapX(X)==(X-modele.getCenterX())/modele.getZoomLevel(),true);
-        assertEquals(modele.getMapY(Y)==(Y-modele.getCenterY())/modele.getZoomLevel(),true);
-        assertEquals(modele.getViewX(X)==(X-modele.getCenterX())*modele.getZoomLevel(),true);
-        assertEquals(modele.getViewY(Y)==(Y-modele.getCenterY())*modele.getZoomLevel(),true);
+        assertEquals(model.getMapX(X)==(X- model.getCenterX())/ model.getZoomLevel(),true);
+        assertEquals(model.getMapY(Y)==(Y- model.getCenterY())/ model.getZoomLevel(),true);
+        assertEquals(model.getViewX(X)==(X- model.getCenterX())* model.getZoomLevel(),true);
+        assertEquals(model.getViewY(Y)==(Y- model.getCenterY())* model.getZoomLevel(),true);
 
     }
 
     @Test
     public void testIterationsUpdate(){
         // Test min iterations change
-        controller.changeIteration(Settings.MIN_ITERATIONS-50);
-        assertEquals(modele.getIterations()==Settings.MIN_ITERATIONS,true);
+        controller.changeIteration(model.getFractalType().getDrawer().getMinIterations()-50);
+        assertEquals(model.getIterations()== model.getFractalType().getDrawer().getMinIterations(),true);
 
         // Test max iterations change
-        controller.changeIteration(Settings.MAX_ITERATIONS+50);
-        assertEquals(modele.getIterations()==Settings.MAX_ITERATIONS,true);
+        controller.changeIteration(model.getFractalType().getDrawer().getMaxIterations()+50);
+        assertEquals(model.getIterations()== model.getFractalType().getDrawer().getMaxIterations(),true);
     }
 
     @Test
     public void testColorationMode(){
         // test default is set to ORIGINAL
-        assertEquals(modele.getColorationMode()==SettingsController.ColorationMode.ORIGINAL,true);
+        assertEquals(model.getColorationMode()==SettingsController.ColorationMode.ORIGINAL,true);
 
         // Test change coloration mode
         controller.changeColorationMode(SettingsController.ColorationMode.BLUE);
-        assertEquals(modele.getColorationMode()== SettingsController.ColorationMode.BLUE,true);
+        assertEquals(model.getColorationMode()== SettingsController.ColorationMode.BLUE,true);
 
-        // Test exception
-        // TODO:
-        // controller.changeColorationMode(NULL);
-        // il faut check qu'uen exception est lancée car on ne peut pas mettre null ici
+        // Test exception on color mode change
+        boolean hasThrownAnException = false;
+        try{
+            controller.changeColorationMode(null);
+        }catch (NullPointerException e){
+            hasThrownAnException = true;
+        }
+        assertEquals(hasThrownAnException,true);
+    }
+
+    @Test
+    public void testExceptions(){
+        // Test if an exception has been thrown when trying to set a null fractal with the constructor
+        boolean hasThrownAnException = false;
+        try{
+            Settings modelTest = new Settings(0f,null);
+        }catch (NullPointerException e){
+            hasThrownAnException = true;
+        }
+        assertEquals(hasThrownAnException,true);
+
+        // Test if an exception has been thrown when trying to set a null fractal with the method
+        hasThrownAnException = false;
+        try{
+           controller.setFractalType(null);
+        }catch (NullPointerException e){
+            hasThrownAnException = true;
+        }
+        assertEquals(hasThrownAnException,true);
+
+
     }
 
 }

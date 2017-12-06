@@ -16,4 +16,13 @@ public interface IFractalDrawer {
      * @param settingsController controller
      */
     void draw(Graphics g, int width, int height, Settings settingsModel, SettingsController settingsController);
+
+    float getInitialZoom();
+    float getMinZoom();
+    float getMaxZoom();
+    float getZoomFactor();
+
+    int getInitialIterations();
+    int getMaxIterations();
+    int getMinIterations();
 }
