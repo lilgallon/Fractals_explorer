@@ -64,32 +64,12 @@ public class MandelbrotDrawer implements IFractalDrawer {
 
                 image.setRGB(x, y, getColor((int)i, settingsModel.getColorationMode()).getRGB());
 
-                /* TODO: barre de progression
-                 * 21/11/17
-                 * Implement progressBar
-                 *
-                 * Note: FR psq c'est mieux
-                 *  Il faut faire attention, on ne peut pas mettre la progression dans le model
-                 *  parce que dans ce cas, dès que la progression change, on fire un event de modification
-                 *  et, ça demande de redessiner la vue, et puis ça recommence en boucle et puis stackoverflow
-                 *  exception si l'ordi ne crash pas avant.
-                 *  C'est pourquoi il faudrait implémenter la barre de progression differemment (si on l'implem)
-                 *  Le code est pret, faut juste savoir la maniere dont on va le faire pour le faire de la moins
-                 *  moche maniere possible. Sachant que de ne pas faire ça dans le model quand on fait du MVC c'est
-                 *  de l'irrespect.
-                 *  Cordialement, lilian <3
-                 **/
-
-//                settingsController.updateProgression((x+ settingsModel.getCenterX())*(y+ settingsModel.getCenterY()),(int)((fractal_width+width)*(fractal_height+height)));
-
+                settingsController.updateProgression(x*y,(image.getWidth() )*(start_y+height));
             }
         }
 
         settingsController.resetProgression();
 
-//        g.setColor(Color.WHITE);
-//        g.drawLine(settingsModel.getCenterX(), -1000, settingsModel.getCenterX(), 1000);
-//        g.drawLine(-1000, settingsModel.getCenterY(), 1000, settingsModel.getCenterY());
     }
 
     @Override

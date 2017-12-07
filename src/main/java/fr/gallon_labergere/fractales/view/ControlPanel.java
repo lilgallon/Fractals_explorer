@@ -11,9 +11,10 @@ import java.awt.event.MouseEvent;
 
 public class ControlPanel extends SettingsObserver {
 
+    private static JLabel progressBarLabel;
     private JComboBox fractalTypeSelection;
     private JLabel zoomLabel;
-    private JProgressBar progressBar;
+    private static JProgressBar progressBar;
     private JSlider iterationsSlider;
     private JLabel iterationsLabel;
     private JComboBox colorationModeSelection;
@@ -46,8 +47,18 @@ public class ControlPanel extends SettingsObserver {
         });
         fractalTypeSelection.setSelectedItem(null);
 
-        grid[2][0].add(new JLabel("Zoom"));
-        grid[2][1].add(zoomLabel = new JLabel("(x" + Float.toString((getSettings().getZoomLevel()-getSettings().getFractalType().getDrawer().getInitialZoom())/getSettings().getZoomLevel()-getSettings().getFractalType().getDrawer().getZoomFactor()) + ")"));
+        grid[1][0].add(new JLabel("Mode de coloration"));
+        grid[1][1].add(colorationModeSelection = new JComboBox<>(SettingsController.ColorationMode.values()));
+        colorationModeSelection.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED)
+                getSettingsController().changeColorationMode(
+                        (SettingsController.ColorationMode) e.getItem()
+                );
+        });
+        colorationModeSelection.setSelectedItem(SettingsController.ColorationMode.ORIGINAL);
+
+        grid[3][0].add(new JLabel("Zoom"));
+        grid[3][1].add(zoomLabel = new JLabel("(x" + Float.toString((getSettings().getZoomLevel()-getSettings().getFractalType().getDrawer().getInitialZoom())/getSettings().getZoomLevel()-getSettings().getFractalType().getDrawer().getZoomFactor()) + ")"));
         JButton zoomOut = new JButton("-");
         zoomOut.addMouseListener(new MouseAdapter() {
             @Override
@@ -62,34 +73,21 @@ public class ControlPanel extends SettingsObserver {
                 getSettingsController().zoomIn(e.getX(), e.getY());
             }
         });
-        grid[3][0].add(zoomOut);
-        grid[3][1].add(zoomIn);
-
-        progressBar = new JProgressBar(0,100);
-        progressBar.setValue(0);
-        grid[4][0].add(new JLabel("Progression:"));
-        grid[4][1].add(progressBar);
+        grid[4][0].add(zoomOut);
+        grid[4][1].add(zoomIn);
 
         iterationsSlider = new JSlider();
         iterationsSlider.setMaximum(getSettings().getFractalType().getDrawer().getMaxIterations());
         iterationsSlider.setMinimum(getSettings().getFractalType().getDrawer().getMinIterations());
-        iterationsLabel = new JLabel("[" + getSettings().getIterations() + "] Iterations");
+        iterationsLabel = new JLabel("Precision : [" + getSettings().getIterations() + "] Iteration(s)");
         iterationsSlider.addChangeListener(e -> {
             controller.changeIteration(iterationsSlider.getValue());
-            iterationsLabel.setText("[" + getSettings().getIterations() + "] Iterations");
+            iterationsLabel.setText("Precision : [" + getSettings().getIterations() + "] Iteration(s)");
         });
-        grid[5][0].add(iterationsLabel);
-        grid[5][1].add(iterationsSlider);
+        grid[6][0].add(iterationsLabel);
+        grid[6][1].add(iterationsSlider);
 
-        grid[6][0].add(new JLabel("Mode de coloration"));
-        grid[6][1].add(colorationModeSelection = new JComboBox<>(SettingsController.ColorationMode.values()));
-        colorationModeSelection.addItemListener(e -> {
-            if (e.getStateChange() == ItemEvent.SELECTED)
-                getSettingsController().changeColorationMode(
-                        (SettingsController.ColorationMode) e.getItem()
-                );
-        });
-        colorationModeSelection.setSelectedItem(SettingsController.ColorationMode.ORIGINAL);
+
 
         threadSlider = new JSlider(controller.MIN_THREAD_COUNT, controller.MAX_THREAD_COUNT, controller.MIN_THREAD_COUNT);
         threadLabel = new JLabel("Multithreading : [" + threadSlider.getValue() + "] Thread(s)");
@@ -101,12 +99,33 @@ public class ControlPanel extends SettingsObserver {
         grid[7][1].add(threadSlider);
 
 
+        progressBar = new JProgressBar(0,100);
+        progressBar.setValue(0);
+        progressBarLabel = new JLabel("Progression (0%)");
+        grid[19][0].add(progressBarLabel);
+        grid[19][1].add(progressBar);
+
+
+
     }
+
+    public static void setProgression(int val){
+        progressBarLabel.setText("Progression (" + val + "%)");
+        progressBar.setValue(val);
+    }
+
+    public static int getProgression(){
+        return progressBar.getValue();
+    }
+
 
     @Override
     void update(float zoomLevel, SettingsController.FractalType fractalType, int x, int y) {
         zoomLabel.setText("(x" + zoomLevel + ")");
         fractalTypeSelection.setSelectedItem(fractalType);
-        progressBar.setValue(getSettings().getProgression());
+        //progressBar.setValue(getSettings().getProgression());
+        iterationsSlider.setValue(getSettings().getIterations());
+        iterationsSlider.setMaximum(getSettings().getFractalType().getDrawer().getMaxIterations());
+        iterationsSlider.setMinimum(getSettings().getFractalType().getDrawer().getMinIterations());
     }
 }

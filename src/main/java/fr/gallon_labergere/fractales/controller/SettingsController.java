@@ -2,9 +2,11 @@ package fr.gallon_labergere.fractales.controller;
 
 import fr.gallon_labergere.fractales.Window;
 import fr.gallon_labergere.fractales.model.Settings;
+import fr.gallon_labergere.fractales.view.ControlPanel;
 import fr.gallon_labergere.fractales.view.drawers.IFractalDrawer;
 import fr.gallon_labergere.fractales.view.drawers.MandelbrotDrawer;
-import fr.gallon_labergere.fractales.view.drawers.OtherDrawer;
+import fr.gallon_labergere.fractales.view.drawers.NewtonDrawer;
+import fr.gallon_labergere.fractales.view.drawers.TreeDrawer;
 
 import javax.swing.*;
 import java.util.concurrent.ExecutorService;
@@ -22,8 +24,18 @@ public class SettingsController {
 
     private ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
 
+    /**
+     * Used to prevent the model to fire a change event.
+     * It is useful to use shouldCalculateImage when multiple attributes of the model are changed but
+     * we don't need it the view to be update (=> fractal)
+     * ie: when changing the fractal we have the zoom, the center position, the iteration that are changed, but
+     * we don't want to update the view every time we change an attribute, but when all of these are changed
+     */
+    private boolean shouldCalculateImage;
+
     public SettingsController(Settings settingsModel) {
         this.settingsModel = settingsModel;
+        this.shouldCalculateImage = true;
     }
 
     public Settings getSettingsModel() {
@@ -82,12 +94,18 @@ public class SettingsController {
      */
     public void setFractalType(FractalType fractalType) {
         if (fractalType == null) throw  new NullPointerException("The fractal type must be defined!");
+
+        this.shouldCalculateImage = false;
         settingsModel.setFractalType(fractalType);
         settingsModel.setCenterX(fractalType.getxCenter());
         settingsModel.setCenterY(fractalType.getyCenter());
+        settingsModel.setIterations(fractalType.getDrawer().getInitialIterations());
         settingsModel.setZoomLevel(fractalType.getDrawer().getInitialZoom());
+        this.shouldCalculateImage = true;
+
         recalculateImage();
     }
+
 
     /**
      * Move the fractal
@@ -106,20 +124,23 @@ public class SettingsController {
      * @param aimed Aimed index (final index)
      */
     public void updateProgression(int current, int aimed){
-        /*
+
         if(current>aimed)
             throw new IllegalArgumentException("The current value is bigger than the aimed value.");
         if(current<0)
             throw new IllegalArgumentException("The current value is negative.");
         if(aimed<0)
             throw new IllegalArgumentException("The aimed value is negative.");
-        */
+
         int progress = (current * 100) / aimed;
 
-        // Don't update everytime!!! Only when there is an update to prevent stackoverflow
-        // Each 10% we will update.
+        // We update only if the progression has changed
+        /*shouldCalculateImage = false;
         if (progress > settingsModel.getProgression())
             settingsModel.setProgression(progress);
+        shouldCalculateImage = true;*/
+        if(progress > ControlPanel.getProgression())
+            ControlPanel.setProgression(progress);
     }
 
     /**
@@ -145,18 +166,23 @@ public class SettingsController {
      * Reset the bar progression
      */
     public void resetProgression() {
-        settingsModel.setProgression(0);
+        ControlPanel.setProgression(0);
     }
 
     public void recalculateImage() {
-        if (settingsModel.getImage() == null) return;
+        if ((settingsModel.getImage() == null) ||!shouldCalculateImage) return;
         JPanel viewPanel = Window.getInstance().getViewPanel();
         if (settingsModel.getFractalType() == null) {
             JOptionPane.showMessageDialog(viewPanel.getParent(), "No fractal selected", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
         int height = viewPanel.getHeight();
         if(height!=getSettingsModel().getImage().getHeight()) height = getSettingsModel().getImage().getHeight();
+
+        // Since the tree builder algorithm is recursive, using a multithreading system is slowing it
+        if(threadCount>1 && getSettingsModel().getFractalType() == FractalType.TREE) threadCount = 1;
+
         executorService.shutdownNow();
         try {
             executorService.awaitTermination(10, TimeUnit.SECONDS);
@@ -179,12 +205,17 @@ public class SettingsController {
         this.threadCount = threadCount;
     }
 
+    public void setShouldCalculateImage(boolean b){
+        this.shouldCalculateImage = b;
+    }
+
     /**
      * Fractal list
      */
     public enum FractalType {
         MANDELBROT(new MandelbrotDrawer(), 500, 300),
-        OTHER(new OtherDrawer(), 0, 0);
+        NEWTON(new NewtonDrawer(), 0, 0),
+        TREE(new TreeDrawer(),400,500);
 
         private IFractalDrawer drawer;
         private int xCenter;

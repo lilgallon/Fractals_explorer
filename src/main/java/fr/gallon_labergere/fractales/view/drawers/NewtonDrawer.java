@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 
-public class OtherDrawer implements IFractalDrawer {
+public class NewtonDrawer implements IFractalDrawer {
 
     // newton fractal https://en.wikipedia.org/wiki/Newton_fractal
     private Complex fractal_function(Complex z) {
