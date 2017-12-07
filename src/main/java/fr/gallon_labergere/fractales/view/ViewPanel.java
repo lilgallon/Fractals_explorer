@@ -70,7 +70,7 @@ public class ViewPanel extends SettingsObserver {
      */
     @Override
     void update(float zoomLevel, SettingsController.FractalType fractalType, int x, int y) {
-        paintComponents(getGraphics());
+        paintComponent(getGraphics());
     }
 
     /**
@@ -78,10 +78,13 @@ public class ViewPanel extends SettingsObserver {
      * @param g
      */
     @Override
-    public void paintComponents(Graphics g) {
-        //g.fillRect(0, 0, getWidth(), getHeight());
-        if(getSettings().getFractalType()!=null){
-            getSettings().getFractalType().getDrawer().draw(g, getWidth(), getHeight(), getSettings(), getSettingsController());
-        }
+    public void paintComponent(Graphics g) {
+//        g.fillRect(0, 0, getWidth(), getHeight());
+//        if(getSettings().getFractalType()!=null){
+//            getSettings().getFractalType().getDrawer().draw(g, getWidth(), getHeight(), getSettings(), getSettingsController());
+//        }
+        g.drawImage(getSettings().getImage(), 0, 0, null);
+        g.setColor(Color.RED);
+        g.drawRect(getSettings().getCenterX() - 5, getSettings().getCenterY() - 5, 10, 10);
     }
 }

@@ -17,6 +17,8 @@ public class ControlPanel extends SettingsObserver {
     private JSlider iterationsSlider;
     private JLabel iterationsLabel;
     private JComboBox colorationModeSelection;
+    private JSlider threadSlider;
+    JLabel threadLabel;
 
     public ControlPanel(SettingsController controller) {
         super(controller);
@@ -89,6 +91,14 @@ public class ControlPanel extends SettingsObserver {
         });
         colorationModeSelection.setSelectedItem(SettingsController.ColorationMode.ORIGINAL);
 
+        threadSlider = new JSlider(controller.MIN_THREAD_COUNT, controller.MAX_THREAD_COUNT, controller.MIN_THREAD_COUNT);
+        threadLabel = new JLabel("Multithreading : [" + threadSlider.getValue() + "] Thread(s)");
+        threadSlider.addChangeListener(e -> {
+            controller.setThreadCount(threadSlider.getValue());
+            threadLabel.setText("Multithreading : [" + threadSlider.getValue() + "] Thread(s)");
+        });
+        grid[7][0].add(threadLabel);
+        grid[7][1].add(threadSlider);
 
 
     }

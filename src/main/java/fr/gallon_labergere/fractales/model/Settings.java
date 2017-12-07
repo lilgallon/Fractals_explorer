@@ -2,6 +2,7 @@ package fr.gallon_labergere.fractales.model;
 
 import fr.gallon_labergere.fractales.controller.SettingsController;
 
+import java.awt.image.BufferedImage;
 import java.util.Observable;
 
 public class Settings extends Observable {
@@ -19,9 +20,10 @@ public class Settings extends Observable {
     private int progression;
     private int iterations;
     private SettingsController.ColorationMode colorationMode;
+    private BufferedImage image;
 
     public Settings(float zoomLevel, SettingsController.FractalType fractalType) {
-        if(fractalType==null){throw new NullPointerException("The fractalType must be defined!");}
+        if (fractalType == null) throw new NullPointerException("The fractalType must be defined!");
         this.zoomLevel = zoomLevel;
         this.fractalType = fractalType;
         this.centerX = 0;
@@ -29,6 +31,21 @@ public class Settings extends Observable {
         this.progression = 0;
         this.iterations = fractalType.getDrawer().getInitialIterations();
         this.colorationMode = SettingsController.ColorationMode.ORIGINAL;
+    }
+
+    /**
+     * @return the current image
+     */
+    public BufferedImage getImage() {
+        return image;
+    }
+
+    /**
+     * Update the displayed image
+     * @param image new image
+     */
+    public void setImage(BufferedImage image) {
+        this.image = image;
     }
 
     /**
@@ -96,8 +113,8 @@ public class Settings extends Observable {
      * @param x
      * @return
      */
-    public float getViewX(float x) {
-        return ((x - centerX) / zoomLevel);
+    public int getViewX(float x) {
+        return (int) ((x * zoomLevel) + centerX);
     }
 
     /**
@@ -105,8 +122,8 @@ public class Settings extends Observable {
      * @param y
      * @return
      */
-    public float getViewY(float y) {
-        return ((y - centerY) / zoomLevel);
+    public int getViewY(float y) {
+        return (int) ((y * zoomLevel) + centerY);
     }
 
     /**
@@ -114,8 +131,8 @@ public class Settings extends Observable {
      * @param x
      * @return
      */
-    public float getMapX(float x) {
-        return (x - centerX) * zoomLevel;
+    public float getMapX(int x) {
+        return (x - centerX) / zoomLevel;
     }
 
     /**
@@ -123,8 +140,8 @@ public class Settings extends Observable {
      * @param y
      * @return
      */
-    public float getMapY(float y) {
-        return (y - centerY) * zoomLevel;
+    public float getMapY(int y) {
+        return (y - centerY) / zoomLevel;
     }
 
     /**
@@ -148,7 +165,7 @@ public class Settings extends Observable {
      * When the model (this class) spots a change, we need to notify the observers about it.
      * This method is used to say to the observers that the observable class has been changed.
      */
-    private void fire() {
+    public void fire() {
         setChanged();
         notifyObservers();
     }

@@ -7,6 +7,7 @@ import fr.gallon_labergere.fractales.view.ViewPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Window extends JFrame {
 
@@ -17,6 +18,8 @@ public class Window extends JFrame {
 
     private final int WIDTH = 1280;
     private final int HEIGHT = 720;
+
+    private JPanel viewPanel;
 
     private Window() {
         instance = this;
@@ -32,12 +35,17 @@ public class Window extends JFrame {
         JPanel root = (JPanel) getContentPane();
         root.setLayout(new BorderLayout());
         root.add(new ControlPanel(settingsController), BorderLayout.WEST);
-        root.add(new ViewPanel(settingsController), BorderLayout.CENTER);
+        root.add(viewPanel = new ViewPanel(settingsController), BorderLayout.CENTER);
         setVisible(true);
+        settings.setImage(new BufferedImage(viewPanel.getWidth(), viewPanel.getHeight(), BufferedImage.TYPE_INT_RGB));
     }
 
     public static Window getInstance() {
         return instance;
+    }
+
+    public JPanel getViewPanel() {
+        return viewPanel;
     }
 
     public static void main(String[] args) {

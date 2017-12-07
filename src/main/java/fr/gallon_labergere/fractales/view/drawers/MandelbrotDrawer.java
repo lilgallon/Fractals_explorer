@@ -4,54 +4,25 @@ import fr.gallon_labergere.fractales.controller.SettingsController;
 import fr.gallon_labergere.fractales.model.Settings;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class MandelbrotDrawer implements IFractalDrawer {
 
     /**
-     * TODO: remarque sur des attributs inutiles ou pas?
-     * Retirer les MIN / MAX etc... ?
-     * Pour le moment pas sur
-     */
-
-    private final double MIN_X;
-    private final double MAX_X;
-    private final double MIN_Y;
-    private final double MAX_Y;
-
-    private final float INITIAL_ZOOM = 300;
-    private final float MIN_ZOOM = 1f;
-    private final float MAX_ZOOM = 10000f;
-    private final float ZOOM_MULTIPLICATOR = 1.2f;
-
-    private final int INITIAL_ITERATIONS = 25;
-    private final int MIN_ITERATIONS = 25;
-    private final int MAX_ITERATIONS = 500;
-
-    public MandelbrotDrawer(double minX, double maxX, double minY, double maxY) {
-        MIN_X = minX;
-        MAX_X = maxX;
-        MIN_Y = minY;
-        MAX_Y = maxY;
-    }
-
-    /**
      * Method that contain the fractal calculation algorithm
-     * @param g graphics
-     * @param width view width
-     * @param height view height
+     * @param image image
      * @param settingsModel model
      * @param settingsController controller
      */
     @Override
-    public void draw(Graphics g, int width, int height, Settings settingsModel, SettingsController settingsController) {
-
-        /**
+    public void draw(BufferedImage image, int start_y, int heigth, Settings settingsModel, SettingsController settingsController) {
+        /*
          * TODO: optimisation avec les iterations
          * Grosse opti à faire : avoir un faible it_max au début, pour ensuite le faire augmenter avec le zoom.
          * En effet, pas besoin d'être très précis quand on a pas zoom, on augmentera ainsi la précision en zoomant.
          */
 
-        /**
+        /*
          * TODO: IMPORTANT -> ZOOM
          * Il y a un probleme dans le zoom, on le voit d'autant plus que le zoom est fort.
          * Peu importe ce qu'on fait, le zoom va zoomer au CENTRE de la FRACTALE et non pas au CENTRE de l'IMAGE
@@ -61,11 +32,7 @@ public class MandelbrotDrawer implements IFractalDrawer {
         // Maximum number of iteration before stopping the calculation by supposing that the suite is convergent.
         double it_max = settingsModel.getIterations();
 
-        // Used to adjust the fractal initial position
-        double xGap = -500;
-        double yGap = -300;
-
-        /**
+        /*
          * TODO: change resolution => redraw
          * QUand on change la résolution, il faut redessiner la fractale
          */
@@ -78,11 +45,11 @@ public class MandelbrotDrawer implements IFractalDrawer {
         // For every pixel, we will calculate their colors according to if the suite is convergent or divergent
         // The intensity of the colors changes according to the rapidity of the suite to diverge.
         // width & height -> dimensions of the drawing area
-        for(int x = 0 ; x<width ; ++x){
-            for(int y = 0; y<height ; ++y){
+        for (int x = 0 ; x < image.getWidth() ; ++x){
+            for (int y = start_y; y < start_y + heigth ; ++y){
 
-                double c_r = (x + xGap - centerX) / zoom;
-                double c_i = (y + yGap - centerY) / zoom ;
+                double c_r = (x - centerX) / zoom;
+                double c_i = (y - centerY) / zoom ;
 
                 double z_r = 0;
                 double z_i = 0;
@@ -95,11 +62,9 @@ public class MandelbrotDrawer implements IFractalDrawer {
                     ++i;
                 } while (z_r * z_r + z_i * z_i < 4 && i < it_max);
 
+                image.setRGB(x, y, getColor((int)i, settingsModel.getColorationMode()).getRGB());
 
-                g.setColor(getColor((int)i, settingsModel.getColorationMode()));
-                g.fillRect(x, y, 1, 1);
-
-                /** TODO: barre de progression
+                /* TODO: barre de progression
                  * 21/11/17
                  * Implement progressBar
                  *
@@ -115,58 +80,59 @@ public class MandelbrotDrawer implements IFractalDrawer {
                  *  Cordialement, lilian <3
                  **/
 
-                //settingsController.updateProgression((x+ settingsModel.getCenterX())*(y+ settingsModel.getCenterY()),(int)((fractal_width+width)*(fractal_height+height)));
+//                settingsController.updateProgression((x+ settingsModel.getCenterX())*(y+ settingsModel.getCenterY()),(int)((fractal_width+width)*(fractal_height+height)));
 
             }
         }
 
         settingsController.resetProgression();
-        g.setColor(Color.WHITE);
-        g.drawLine(settingsModel.getCenterX(), -1000, settingsModel.getCenterX(), 1000);
-        g.drawLine(-1000, settingsModel.getCenterY(), 1000, settingsModel.getCenterY());
+
+//        g.setColor(Color.WHITE);
+//        g.drawLine(settingsModel.getCenterX(), -1000, settingsModel.getCenterX(), 1000);
+//        g.drawLine(-1000, settingsModel.getCenterY(), 1000, settingsModel.getCenterY());
     }
 
     @Override
     public float getInitialZoom() {
-        return INITIAL_ZOOM;
+        return 300f;
     }
 
     @Override
     public float getMinZoom() {
-        return MIN_ZOOM;
+        return 150f;
     }
 
     @Override
     public float getMaxZoom() {
-        return MAX_ZOOM;
+        return 1000000000f;
     }
 
     @Override
     public float getZoomFactor() {
-        return ZOOM_MULTIPLICATOR;
+        return 1.2f;
     }
 
     @Override
     public int getInitialIterations() {
-        return INITIAL_ITERATIONS;
+        return 25;
     }
 
     @Override
     public int getMaxIterations() {
-        return MAX_ITERATIONS;
+        return 500;
     }
 
     @Override
     public int getMinIterations() {
-        return MIN_ITERATIONS;
+        return 25;
     }
 
     /**
      * Get the color of the pixel according to the number of iterations.
      * Method #1 inspired by https://stackoverflow.com/questions/16500656/which-color-gradient-is-used-to-color-mandelbrot-in-wikipedia#25816111
      * Method #x (other) is a basic one with a blue gradient
-     * @param iterations
-     * @return
+     * @param iterations nombre d'iterations
+     * @return couleur
      */
     private Color getColor(int iterations, SettingsController.ColorationMode colorMode){
         Color color;
@@ -227,9 +193,9 @@ public class MandelbrotDrawer implements IFractalDrawer {
                     break;
             }
         } else if (colorMode == SettingsController.ColorationMode.BLUE) {
-            color = (iterations == MAX_ITERATIONS)
+            color = (iterations == getMaxIterations())
                     ? Color.black
-                    : new Color(0f, 0f, (float)iterations / MAX_ITERATIONS);
+                    : new Color(0f, 0f, (float)iterations / getMaxIterations());
         } else throw new NullPointerException("It should not happen! An exception must have been thrown before in the colorset method");
     return color;
     }

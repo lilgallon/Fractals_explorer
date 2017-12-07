@@ -4,18 +4,17 @@ import fr.gallon_labergere.fractales.controller.SettingsController;
 import fr.gallon_labergere.fractales.model.Settings;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public interface IFractalDrawer {
 
     /**
      * Draw the selected fractal
-     * @param g graphics
-     * @param width view width
-     * @param height view height
+     * @param image image
      * @param settingsModel model
      * @param settingsController controller
      */
-    void draw(Graphics g, int width, int height, Settings settingsModel, SettingsController settingsController);
+    void draw(BufferedImage image, int start_y, int heigth, Settings settingsModel, SettingsController settingsController);
 
     float getInitialZoom();
     float getMinZoom();
