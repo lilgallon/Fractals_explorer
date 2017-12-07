@@ -15,7 +15,7 @@ public class MandelbrotDrawer implements IFractalDrawer {
      * @param settingsController controller
      */
     @Override
-    public void draw(BufferedImage image, int start_y, int heigth, Settings settingsModel, SettingsController settingsController) {
+    public void draw(BufferedImage image, int start_y, int height, Settings settingsModel, SettingsController settingsController) {
         /*
          * TODO: optimisation avec les iterations
          * Grosse opti à faire : avoir un faible it_max au début, pour ensuite le faire augmenter avec le zoom.
@@ -46,7 +46,7 @@ public class MandelbrotDrawer implements IFractalDrawer {
         // The intensity of the colors changes according to the rapidity of the suite to diverge.
         // width & height -> dimensions of the drawing area
         for (int x = 0 ; x < image.getWidth() ; ++x){
-            for (int y = start_y; y < start_y + heigth ; ++y){
+            for (int y = start_y; y < start_y + height; ++y){
 
                 double c_r = (x - centerX) / zoom;
                 double c_i = (y - centerY) / zoom ;

@@ -26,11 +26,11 @@ public class OtherDrawer implements IFractalDrawer {
     }
 
     @Override
-    public void draw(BufferedImage image, int start_y, int heigth, Settings settingsModel, SettingsController settingsController) {
+    public void draw(BufferedImage image, int start_y, int height, Settings settingsModel, SettingsController settingsController) {
         float tolerance = 0.0001f;
 
         for (int x = 0; x < image.getWidth(); ++x) {
-            for(int y = start_y; y < start_y + heigth; ++y) {
+            for(int y = start_y; y < start_y + height; ++y) {
                 double z_i = (y - settingsModel.getCenterY())/settingsModel.getZoomLevel();//(y * (yb - ya ) / (height -1) + ya ) ;//+ settingsModel.getCenterY() /settingsModel.getZoomLevel();
                 double z_r = (x - settingsModel.getCenterX())/settingsModel.getZoomLevel();//(x * (xb - xa) / (height -1) + xa ) ;//+ settingsModel.getCenterX() /settingsModel.getZoomLevel();
 

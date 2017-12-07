@@ -14,7 +14,7 @@ public interface IFractalDrawer {
      * @param settingsModel model
      * @param settingsController controller
      */
-    void draw(BufferedImage image, int start_y, int heigth, Settings settingsModel, SettingsController settingsController);
+    void draw(BufferedImage image, int start_y, int height, Settings settingsModel, SettingsController settingsController);
 
     float getInitialZoom();
     float getMinZoom();

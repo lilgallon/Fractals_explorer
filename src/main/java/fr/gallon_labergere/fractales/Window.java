@@ -37,6 +37,7 @@ public class Window extends JFrame {
         root.add(new ControlPanel(settingsController), BorderLayout.WEST);
         root.add(viewPanel = new ViewPanel(settingsController), BorderLayout.CENTER);
         setVisible(true);
+        System.out.println("vieww:"+viewPanel.getWidth() + " heightw"+ viewPanel.getHeight());
         settings.setImage(new BufferedImage(viewPanel.getWidth(), viewPanel.getHeight(), BufferedImage.TYPE_INT_RGB));
     }
 

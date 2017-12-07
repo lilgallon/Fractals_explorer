@@ -84,7 +84,7 @@ public class ViewPanel extends SettingsObserver {
 //            getSettings().getFractalType().getDrawer().draw(g, getWidth(), getHeight(), getSettings(), getSettingsController());
 //        }
         g.drawImage(getSettings().getImage(), 0, 0, null);
-        g.setColor(Color.RED);
-        g.drawRect(getSettings().getCenterX() - 5, getSettings().getCenterY() - 5, 10, 10);
+        //g.setColor(Color.RED);
+        //g.drawRect(getSettings().getCenterX() - 5, getSettings().getCenterY() - 5, 0, 10);
     }
 }

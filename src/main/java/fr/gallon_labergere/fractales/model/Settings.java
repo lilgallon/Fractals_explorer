@@ -103,7 +103,7 @@ public class Settings extends Observable {
      * Sets the current Y center
      * @param centerY
      */
-    public void setCenterY(int centerY) {
+    public void setCenterY(int centerY) { // TODO: CARE IF CENTER REACH MAX_INT, IT WILL FUCK UP EVERYTHING :(
         this.centerY = centerY;
         fire();
     }

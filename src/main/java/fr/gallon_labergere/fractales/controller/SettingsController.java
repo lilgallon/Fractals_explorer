@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 public class SettingsController {
 
     public static final int MIN_THREAD_COUNT = 1;
-    public static final int MAX_THREAD_COUNT = 8;
+    public static final int MAX_THREAD_COUNT = Runtime.getRuntime().availableProcessors();
 
     private int threadCount = MIN_THREAD_COUNT;
 
@@ -155,6 +155,8 @@ public class SettingsController {
             JOptionPane.showMessageDialog(viewPanel.getParent(), "No fractal selected", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        int height = viewPanel.getHeight();
+        if(height!=getSettingsModel().getImage().getHeight()) height = getSettingsModel().getImage().getHeight();
         executorService.shutdownNow();
         try {
             executorService.awaitTermination(10, TimeUnit.SECONDS);
@@ -162,11 +164,12 @@ public class SettingsController {
             e.printStackTrace();
         }
         executorService = Executors.newFixedThreadPool(threadCount);
-        int heigthPart = viewPanel.getHeight() / threadCount;
+        int heightPart = height / threadCount;
+
         for (int i = 0; i < threadCount; i++) {
-            final int start_y = heigthPart * i;
+            final int start_y = heightPart * i;
             executorService.execute(() -> {
-                settingsModel.getFractalType().getDrawer().draw(settingsModel.getImage(), start_y, heigthPart, settingsModel, this);
+                settingsModel.getFractalType().getDrawer().draw(settingsModel.getImage(), start_y, heightPart, settingsModel, this);
                 settingsModel.fire();
             });
         }
