@@ -1,6 +1,7 @@
 package fr.gallon_labergere.fractales.view;
 
 import fr.gallon_labergere.fractales.controller.SettingsController;
+import fr.gallon_labergere.fractales.model.Settings;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -112,7 +113,7 @@ public class ControlPanel extends SettingsObserver {
         grid[6][1].add(iterationsSlider);
 
         // Thread number selector
-        threadSlider = new JSlider(SettingsController.MIN_THREAD_COUNT, SettingsController.MAX_THREAD_COUNT, SettingsController.MIN_THREAD_COUNT);
+        threadSlider = new JSlider(Settings.MIN_THREAD_COUNT, Settings.MAX_THREAD_COUNT, Settings.MIN_THREAD_COUNT);
         threadLabel = new JLabel("Multithreading : [" + threadSlider.getValue() + "] Thread(s)");
         threadSlider.addChangeListener(e -> {
             controller.setThreadCount(threadSlider.getValue());
