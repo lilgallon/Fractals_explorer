@@ -6,70 +6,68 @@ import fr.gallon_labergere.fractales.model.Settings;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+/* This file is part of the JavaFractal project.
+ *
+ * JavaFractal is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * JavaFractal is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with JavaFractal.  If not, see <http://www.gnu.org/licenses/>.
+ * Authors : Lilian Gallon, Rémi Labergère
+ */
 public class MandelbrotDrawer implements IFractalDrawer {
 
-    /**
-     * Method that contain the fractal calculation algorithm
-     * @param image image
-     * @param settingsModel model
-     * @param settingsController controller
-     */
     @Override
     public void draw(BufferedImage image, int start_y, int height, Settings settingsModel, SettingsController settingsController) {
-        /*
-         * TODO: optimisation avec les iterations
-         * Grosse opti à faire : avoir un faible it_max au début, pour ensuite le faire augmenter avec le zoom.
-         * En effet, pas besoin d'être très précis quand on a pas zoom, on augmentera ainsi la précision en zoomant.
-         */
-
-        /*
-         * TODO: IMPORTANT -> ZOOM
-         * Il y a un probleme dans le zoom, on le voit d'autant plus que le zoom est fort.
-         * Peu importe ce qu'on fait, le zoom va zoomer au CENTRE de la FRACTALE et non pas au CENTRE de l'IMAGE
-         * Je sais pas trop d'où ça vient, c'est surement la méthode zoomIn et zoomOut qui move le centre pas correctement
-         */
 
         // Maximum number of iteration before stopping the calculation by supposing that the suite is convergent.
         double it_max = settingsModel.getIterations();
 
-        /*
-         * TODO: change resolution => redraw
-         * QUand on change la résolution, il faut redessiner la fractale
-         */
-
-        // The default zoom is not correct for mandelbrot, here are the adjustments
-        double zoom = settingsModel.getZoomLevel();//*settingsModel.getZoomLevel()*200+100;
+        double zoom = settingsModel.getZoomLevel();
         double centerX = settingsModel.getCenterX();
         double centerY = settingsModel.getCenterY();
 
         // For every pixel, we will calculate their colors according to if the suite is convergent or divergent
         // The intensity of the colors changes according to the rapidity of the suite to diverge.
-        // width & height -> dimensions of the drawing area
+        // image.getWidth() & start_y + height -> dimensions of the drawing area
         for (int x = 0 ; x < image.getWidth() ; ++x){
             for (int y = start_y; y < start_y + height; ++y){
 
+                // c_r -> x coordinate on where to start the suite and c_i same but for y
                 double c_r = (x - centerX) / zoom;
                 double c_i = (y - centerY) / zoom ;
 
                 double z_r = 0;
                 double z_i = 0;
-                double i = 0;
+                int it = 0;
 
                 do {
-                    double tmp = z_r;                   // Ici on stocke z_r
-                    z_r = z_r * z_r - z_i * z_i + c_r;    // Ici on calcule z_r au rang n+1
+                    // We get z_r at n
+                    double tmp = z_r;
+
+                    // We calculate z at n+1 (so without using complex we need to calculate imaginary and real part differently z_r and z_i)
+                    z_r = z_r * z_r - z_i * z_i + c_r;
                     z_i = 2 * z_i * tmp + c_i;
-                    ++i;
-                } while (z_r * z_r + z_i * z_i < 4 && i < it_max);
 
-                image.setRGB(x, y, getColor((int)i, settingsModel.getColorationMode()).getRGB());
+                    // Increment the iteration
+                    ++it;
 
+                    // And we do all of this while the module of z is inferior to 2
+                    // Reminder : module of z is sqrt(z_r^2+z_i^2)
+                } while (z_r * z_r + z_i * z_i < 4 && it < it_max);
+
+                image.setRGB(x, y, getColor(it, settingsModel.getColorationMode()).getRGB());
                 settingsController.updateProgression(x*y,(image.getWidth() )*(start_y+height));
             }
         }
-
         settingsController.resetProgression();
-
     }
 
     @Override
@@ -109,10 +107,10 @@ public class MandelbrotDrawer implements IFractalDrawer {
 
     /**
      * Get the color of the pixel according to the number of iterations.
-     * Method #1 inspired by https://stackoverflow.com/questions/16500656/which-color-gradient-is-used-to-color-mandelbrot-in-wikipedia#25816111
-     * Method #x (other) is a basic one with a blue gradient
-     * @param iterations nombre d'iterations
-     * @return couleur
+     * Method ORIGINAL inspired by https://stackoverflow.com/questions/16500656/which-color-gradient-is-used-to-color-mandelbrot-in-wikipedia#25816111
+     * Method BLUE is a basic one with a blue gradient
+     * @param iterations number of iterations
+     * @return color
      */
     private Color getColor(int iterations, SettingsController.ColorationMode colorMode){
         Color color;
