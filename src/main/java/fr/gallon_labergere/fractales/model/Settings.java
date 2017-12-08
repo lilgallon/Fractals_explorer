@@ -35,8 +35,8 @@ public class Settings extends Observable {
     public static final int MAX_THREAD_COUNT = Runtime.getRuntime().availableProcessors();
 
     private float zoomLevel;
-    private int centerX;
-    private int centerY;
+    private long centerX;
+    private long centerY;
     private int iterations;
     private int threadCount;
 
@@ -119,7 +119,7 @@ public class Settings extends Observable {
     /**
      * @return the current center (x)
      */
-    public int getCenterX() {
+    public long getCenterX() {
         return centerX;
     }
 
@@ -128,14 +128,14 @@ public class Settings extends Observable {
      * MVC: does not fire an event
      * @param centerX new x pos of the center
      */
-    public void setCenterX(int centerX) {
+    public void setCenterX(long centerX) {
         this.centerX = centerX;
     }
 
     /**
      * @return the current center (y)
      */
-    public int getCenterY() {
+    public long getCenterY() {
         return centerY;
     }
 
@@ -144,7 +144,7 @@ public class Settings extends Observable {
      * MVC: fires an event
      * @param centerY new y pos of the center
      */
-    public void setCenterY(int centerY) {
+    public void setCenterY(long centerY) {
         this.centerY = centerY;
         fire();
     }

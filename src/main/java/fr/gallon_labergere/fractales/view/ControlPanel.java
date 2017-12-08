@@ -156,7 +156,7 @@ public class ControlPanel extends SettingsObserver {
      * @param y unnecessary in this case
      */
     @Override
-    void update(float zoomLevel, SettingsController.FractalType fractalType, int x, int y) {
+    void update(float zoomLevel, SettingsController.FractalType fractalType, long x, long y) {
         zoomLabel.setText("(x" + zoomLevel + ")");
         fractalTypeSelection.setSelectedItem(fractalType);
         iterationsSlider.setValue(getSettings().getIterations());

@@ -82,7 +82,7 @@ public class MandelbrotDrawer implements IFractalDrawer {
 
     @Override
     public float getMaxZoom() {
-        return 1000000000f;
+        return 10000000000f;
     }
 
     @Override

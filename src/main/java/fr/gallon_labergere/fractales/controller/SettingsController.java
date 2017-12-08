@@ -80,6 +80,7 @@ public class SettingsController {
         settingsModel.setZoomLevel(settingsModel.getZoomLevel() * settingsModel.getFractalType().getDrawer().getZoomFactor());
         int newCursorX = settingsModel.getViewX(prevMapX);
         int newCursorY = settingsModel.getViewY(prevMapY);
+        System.out.println(x + " -> " + newCursorX);
         move(x - newCursorX, y - newCursorY); // Compensating cursor movement
 
     }
@@ -124,7 +125,7 @@ public class SettingsController {
      * @param dx horizontal gap
      * @param dy vertical gap
      */
-    public void move(int dx, int dy) {
+    public void move(long dx, long dy) {
         settingsModel.setCenterX(settingsModel.getCenterX() + dx);
         settingsModel.setCenterY(settingsModel.getCenterY() + dy);
         recalculateImage();
@@ -209,7 +210,7 @@ public class SettingsController {
         try {
             // Wait a while for tasks to respond to being cancelled
             executorService.awaitTermination(10, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         // Prepare executor service

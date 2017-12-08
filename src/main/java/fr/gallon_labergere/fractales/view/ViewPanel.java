@@ -87,7 +87,7 @@ public class ViewPanel extends SettingsObserver {
      * @param y vertical gap according to the center of the fracale
      */
     @Override
-    void update(float zoomLevel, SettingsController.FractalType fractalType, int x, int y) {
+    void update(float zoomLevel, SettingsController.FractalType fractalType, long x, long y) {
         paintComponent(getGraphics());
     }
 

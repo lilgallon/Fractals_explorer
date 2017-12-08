@@ -70,5 +70,5 @@ public abstract class SettingsObserver extends JPanel implements Observer {
      * @param x current x pos
      * @param y current y pos
      */
-    abstract void update(float zoomLevel, SettingsController.FractalType fractalType, int x, int y);
+    abstract void update(float zoomLevel, SettingsController.FractalType fractalType, long x, long y);
 }

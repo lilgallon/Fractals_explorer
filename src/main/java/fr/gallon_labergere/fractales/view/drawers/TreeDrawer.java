@@ -45,13 +45,13 @@ public class TreeDrawer implements IFractalDrawer {
      * @param depth number of trees
      * @param image image on which the tree will be drawn
      */
-    private void drawTree(int x1, int y1, double angle, int depth, BufferedImage image) {
+    private void drawTree(long x1, long y1, double angle, int depth, BufferedImage image) {
         // If the depth is at 0, we hit the end
         if (depth == 0) return;
 
         // (x1,y1) : start point and (x2,y2) : end point of the line
-        int x2 = x1 + (int) (Math.cos(Math.toRadians(angle)) * depth * settingsModel.getZoomLevel());
-        int y2 = y1 + (int) (Math.sin(Math.toRadians(angle)) * depth * settingsModel.getZoomLevel());
+        int x2 = (int) (x1 + Math.cos(Math.toRadians(angle)) * depth * settingsModel.getZoomLevel());
+        int y2 = (int) (y1 + Math.sin(Math.toRadians(angle)) * depth * settingsModel.getZoomLevel());
 
         // Draw the current calculated line
         drawLine(x1, y1, x2, y2, getColor(depth), image);
@@ -75,10 +75,10 @@ public class TreeDrawer implements IFractalDrawer {
      * @param color color
      * @param image image
      */
-    private void drawLine(int x1, int y1, int x2, int y2, int color, BufferedImage image){
+    private void drawLine(long x1, long y1, int x2, int y2, int color, BufferedImage image){
 
-        int dx =  abs(x1-x2), sx = x2<x1 ? 1 : -1;
-        int dy = -abs(y1-y2), sy = y2<y1 ? 1 : -1;
+        int dx =  abs((int) (x1-x2)), sx = x2<x1 ? 1 : -1;
+        int dy = -abs((int) (y1-y2)), sy = y2<y1 ? 1 : -1;
         // error value e_xy
         int err = dx+dy, e2;
 
