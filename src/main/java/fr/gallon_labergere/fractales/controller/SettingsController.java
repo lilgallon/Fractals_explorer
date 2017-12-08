@@ -37,10 +37,6 @@ public class SettingsController {
 
     private Settings settingsModel;
 
-    public static final int MIN_THREAD_COUNT = 1;
-    public static final int MAX_THREAD_COUNT = Runtime.getRuntime().availableProcessors();
-
-    private int threadCount;
     private ExecutorService executorService;
 
     /**
@@ -55,8 +51,7 @@ public class SettingsController {
     public SettingsController(Settings settingsModel) {
         this.settingsModel = settingsModel;
         this.shouldCalculateImage = true;
-        this.threadCount = MIN_THREAD_COUNT;
-        this.executorService = Executors.newFixedThreadPool(this.threadCount);
+        this.executorService = Executors.newFixedThreadPool(settingsModel.getThreadCount());
     }
 
     /**
@@ -122,7 +117,6 @@ public class SettingsController {
 
         recalculateImage();
     }
-
 
     /**
      * Move the fractal
@@ -206,6 +200,7 @@ public class SettingsController {
         if(height!=settingsModel.getImage().getHeight()) height = settingsModel.getImage().getHeight();
 
         // Since the tree builder algorithm is recursive, using a multithreading system is slowing it
+        int threadCount = settingsModel.getThreadCount();
         if(threadCount>1 && settingsModel.getFractalType() == FractalType.TREE) threadCount = 1;
 
         // Cancel currently executing tasks
@@ -235,7 +230,9 @@ public class SettingsController {
      * @param threadCount the new number of thread(s) to use
      */
     public void setThreadCount(int threadCount) {
-        this.threadCount = threadCount;
+        if(threadCount>Settings.MAX_THREAD_COUNT) settingsModel.setThreadCount(threadCount);
+        else if(threadCount<Settings.MIN_THREAD_COUNT) settingsModel.setThreadCount(Settings.MIN_THREAD_COUNT);
+        else settingsModel.setThreadCount(threadCount);
     }
 
     public Settings getSettingsModel() {

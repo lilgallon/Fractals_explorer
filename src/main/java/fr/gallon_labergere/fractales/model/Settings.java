@@ -31,10 +31,14 @@ public class Settings extends Observable {
     private SettingsController.ColorationMode colorationMode;
     private BufferedImage image;
 
+    public static final int MIN_THREAD_COUNT = 1;
+    public static final int MAX_THREAD_COUNT = Runtime.getRuntime().availableProcessors();
+
     private float zoomLevel;
     private int centerX;
     private int centerY;
     private int iterations;
+    private int threadCount;
 
     /**
      * Constructor
@@ -50,6 +54,7 @@ public class Settings extends Observable {
         this.centerY = 0;
         this.iterations = fractalType.getDrawer().getInitialIterations();
         this.colorationMode = SettingsController.ColorationMode.ORIGINAL;
+        this.threadCount = MIN_THREAD_COUNT;
     }
 
     /**
@@ -217,5 +222,22 @@ public class Settings extends Observable {
     public void setColorationMode(SettingsController.ColorationMode colorationMode) {
         this.colorationMode = colorationMode;
         fire();
+    }
+
+    /**
+     * Get the current number of threads used
+     * @return the current number of threads used
+     */
+    public int getThreadCount() {
+        return threadCount;
+    }
+
+    /**
+     * Update the current number of threads used
+     * MVC: does not fire an event
+     * @param threadCount the new number of threads used
+     */
+    public void setThreadCount(int threadCount) {
+        this.threadCount = threadCount;
     }
 }

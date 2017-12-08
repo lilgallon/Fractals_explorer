@@ -1,7 +1,9 @@
 package fr.gallon_labergere.fractales.tests;
 
+import fr.gallon_labergere.fractales.Window;
 import fr.gallon_labergere.fractales.controller.SettingsController;
 import fr.gallon_labergere.fractales.model.Settings;
+import fr.gallon_labergere.fractales.view.ControlPanel;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -81,6 +83,23 @@ public class ControllerTests {
         controller.setFractalType(SettingsController.FractalType.TREE);
         assertEquals(model.getFractalType()== SettingsController.FractalType.TREE,true);
 
+        // Test if an exception has been thrown when trying to set a null fractal with the constructor
+        boolean hasThrownAnException = false;
+        try{
+            Settings modelTest = new Settings(0f,null);
+        }catch (NullPointerException e){
+            hasThrownAnException = true;
+        }
+        assertEquals(hasThrownAnException,true);
+
+        // Test if an exception has been thrown when trying to set a null fractal with the method
+        hasThrownAnException = false;
+        try{
+            controller.setFractalType(null);
+        }catch (NullPointerException e){
+            hasThrownAnException = true;
+        }
+        assertEquals(hasThrownAnException,true);
     }
 
     @Test
@@ -108,10 +127,10 @@ public class ControllerTests {
         // Mapping
         final int X = 5;
         final int Y = 10;
-        assertEquals(model.getMapX(X)==(X- model.getCenterX())/ model.getZoomLevel(),true);
-        assertEquals(model.getMapY(Y)==(Y- model.getCenterY())/ model.getZoomLevel(),true);
-        assertEquals(model.getViewX(X)==(X- model.getCenterX())* model.getZoomLevel(),true);
-        assertEquals(model.getViewY(Y)==(Y- model.getCenterY())* model.getZoomLevel(),true);
+        assertEquals(model.getMapX(X),(X- model.getCenterX())/ model.getZoomLevel(),0f);
+        assertEquals(model.getMapY(Y),(Y- model.getCenterY())/ model.getZoomLevel(),0f);
+        assertEquals(model.getViewX(X),model.getCenterX()* model.getZoomLevel() + X,0f);
+        assertEquals(model.getViewY(Y),model.getCenterY()* model.getZoomLevel() + Y,0f);
 
     }
 
@@ -144,28 +163,4 @@ public class ControllerTests {
         }
         assertEquals(hasThrownAnException,true);
     }
-
-    @Test
-    public void testExceptions(){
-        // Test if an exception has been thrown when trying to set a null fractal with the constructor
-        boolean hasThrownAnException = false;
-        try{
-            Settings modelTest = new Settings(0f,null);
-        }catch (NullPointerException e){
-            hasThrownAnException = true;
-        }
-        assertEquals(hasThrownAnException,true);
-
-        // Test if an exception has been thrown when trying to set a null fractal with the method
-        hasThrownAnException = false;
-        try{
-           controller.setFractalType(null);
-        }catch (NullPointerException e){
-            hasThrownAnException = true;
-        }
-        assertEquals(hasThrownAnException,true);
-
-
-    }
-
 }
