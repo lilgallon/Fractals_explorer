@@ -1,7 +1,26 @@
 package fr.gallon_labergere.fractales.utils;
 
+/* This file is part of the JavaFractal project.
+ *
+ * JavaFractal is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * JavaFractal is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with JavaFractal.  If not, see <http://www.gnu.org/licenses/>.
+ * Authors : Lilian Gallon, Rémi Labergère
+ */
+
 /**
- * Created by lgallon on 06/12/17.
+ * Used to simplify the newton fractal calculations
+ * Important note : Java does not support operator overloading
+ * Some details here: https://stackoverflow.com/questions/77718/why-doesnt-java-offer-operator-overloading
  */
 public class Complex {
 
@@ -14,9 +33,8 @@ public class Complex {
     }
 
     /**
-     * this + z
-     * @param z
-     * @return
+     * @param z complex
+     * @return this + z
      */
     public Complex plus(Complex z){
         double new_real = real + z.getReal();
@@ -25,9 +43,8 @@ public class Complex {
     }
 
     /**
-     * this + a
-     * @param a
-     * @return
+     * @param a constant
+     * @return this + a
      */
     public Complex plus(double a){
         double new_real = real + a;
@@ -36,9 +53,8 @@ public class Complex {
     }
 
     /**
-     * this - z
-     * @param z
-     * @return
+     * @param z complex
+     * @return this - z
      */
     public Complex minus(Complex z){
         double new_real = real - z.getReal();
@@ -47,9 +63,8 @@ public class Complex {
     }
 
     /**
-     * this - a
-     * @param a
-     * @return
+     * @param a constant
+     * @return this - a
      */
     public Complex minus(double a){
         double new_real = real - a;
@@ -58,9 +73,8 @@ public class Complex {
     }
 
     /**
-     * this * z
-     * @param z
-     * @return
+     * @param z complex
+     * @return this * z
      */
     public Complex times(Complex z){
         double new_real = real * z.getReal() - imag * z.getImag();
@@ -69,61 +83,68 @@ public class Complex {
     }
 
     /**
-     * this * a
-     * @return a
+     * @param a constant
+     * @return this * a
      */
     public Complex scale(double a) {
         return new Complex(real * a, imag * a);
     }
 
     /**
-     * this / z
-     * @param z
-     * @return
+     * @param z complex
+     * @return this / z
      */
     public Complex divides(Complex z) {
         return z.times(z.reciprocal());
     }
 
     /**
-     *
      * @return the reciprocal
      */
-    public Complex reciprocal() {
+    private Complex reciprocal() {
         double scale = real*real + imag*imag;
         return new Complex(real / scale, -imag / scale);
     }
 
     /**
-     * module(this) => |this|
-     * @return
+     * @return module(this) => |this|
      */
     public double getModule(){
         return Math.sqrt(real*real + imag*imag);
     }
 
     /**
-     * this == z
-     * @param o
-     * @return
+     * @param o object
+     * @return this == z
      */
-    public boolean equals(Object o){
-        if(o==null || !(o instanceof Complex)) return false;
-        return ((Complex) o).getReal()==real && ((Complex) o).getImag()==imag;
+    public boolean equals(Object o) {
+        return !(o == null || !(o instanceof Complex)) && ((Complex) o).getReal() == real && ((Complex) o).getImag() == imag;
     }
 
+    /**
+     * @return real part
+     */
     public double getReal() {
         return real;
     }
 
+    /**
+     * @param real real part
+     */
     public void setReal(double real) {
         this.real = real;
     }
 
+    /**
+     * @return imaginary part
+     */
     public double getImag() {
         return imag;
     }
 
+    /**
+     * @param imag imaginary part
+     */
     public void setImag(double imag) {
         this.imag = imag;
     }

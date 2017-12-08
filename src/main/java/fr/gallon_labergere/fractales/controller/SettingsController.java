@@ -13,33 +13,50 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+/* This file is part of the JavaFractal project.
+*
+        * JavaFractal is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+        * JavaFractal is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+        * You should have received a copy of the GNU General Public License
+* along with JavaFractal.  If not, see <http://www.gnu.org/licenses/>.
+* Authors : Lilian Gallon, Rémi Labergère
+*/
+
+/**
+ * It is the controller.
+ */
 public class SettingsController {
+
+    private Settings settingsModel;
 
     public static final int MIN_THREAD_COUNT = 1;
     public static final int MAX_THREAD_COUNT = Runtime.getRuntime().availableProcessors();
 
-    private int threadCount = MIN_THREAD_COUNT;
-
-    private Settings settingsModel;
-
-    private ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+    private int threadCount;
+    private ExecutorService executorService;
 
     /**
      * Used to prevent the model to fire a change event.
      * It is useful to use shouldCalculateImage when multiple attributes of the model are changed but
-     * we don't need it the view to be update (=> fractal)
+     * we don't need the view to be updated (=> fractal)
      * ie: when changing the fractal we have the zoom, the center position, the iteration that are changed, but
-     * we don't want to update the view every time we change an attribute, but when all of these are changed
+     * we don't want to update the view every time we change an attribute, but when all of these are changed.
      */
     private boolean shouldCalculateImage;
 
     public SettingsController(Settings settingsModel) {
         this.settingsModel = settingsModel;
         this.shouldCalculateImage = true;
-    }
-
-    public Settings getSettingsModel() {
-        return settingsModel;
+        this.threadCount = MIN_THREAD_COUNT;
+        this.executorService = Executors.newFixedThreadPool(this.threadCount);
     }
 
     /**
@@ -97,8 +114,8 @@ public class SettingsController {
 
         this.shouldCalculateImage = false;
         settingsModel.setFractalType(fractalType);
-        settingsModel.setCenterX(fractalType.getxCenter());
-        settingsModel.setCenterY(fractalType.getyCenter());
+        settingsModel.setCenterX(fractalType.getXCenter());
+        settingsModel.setCenterY(fractalType.getYCenter());
         settingsModel.setIterations(fractalType.getDrawer().getInitialIterations());
         settingsModel.setZoomLevel(fractalType.getDrawer().getInitialZoom());
         this.shouldCalculateImage = true;
@@ -135,19 +152,15 @@ public class SettingsController {
         int progress = (current * 100) / aimed;
 
         // We update only if the progression has changed
-        /*shouldCalculateImage = false;
-        if (progress > settingsModel.getProgression())
-            settingsModel.setProgression(progress);
-        shouldCalculateImage = true;*/
         if(progress > ControlPanel.getProgression())
             ControlPanel.setProgression(progress);
     }
 
     /**
      * Used to change the number of iteration i.e. precision
-     * @param val
+     * @param val new number of iterations
      */
-    public void changeIteration(int val){
+    public void changeIterations(int val){
         if (val < settingsModel.getFractalType().getDrawer().getMinIterations())
             val = settingsModel.getFractalType().getDrawer().getMinIterations();
         else if (val > settingsModel.getFractalType().getDrawer().getMaxIterations())
@@ -156,6 +169,10 @@ public class SettingsController {
         recalculateImage();
     }
 
+    /**
+     * Change the coloration mode of the current fractal
+     * @param mode new coloration mode
+     */
     public void changeColorationMode(ColorationMode mode){
        if (mode == null) throw new NullPointerException("The color mode must be defined!");
        settingsModel.setColorationMode(mode);
@@ -169,29 +186,41 @@ public class SettingsController {
         ControlPanel.setProgression(0);
     }
 
+    /**
+     * Calculate the image from the fractal drawer
+     */
     public void recalculateImage() {
+        // We shouldn't calculate the image if its variable isn't defined or if we explicitly said that we don't want to calculate the image
         if ((settingsModel.getImage() == null) ||!shouldCalculateImage) return;
+
+        // We shouldn't calculate the image if we don't have any fractal selected, this should not happen since it is handled by exceptions when changing the fractal.
         JPanel viewPanel = Window.getInstance().getViewPanel();
         if (settingsModel.getFractalType() == null) {
             JOptionPane.showMessageDialog(viewPanel.getParent(), "No fractal selected", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
+        // For whatever reason sometimes at the window initialization, the view panel changes its size which un-synchronizes the image since and the panel size.
+        // Here we check if we have the problem, if so we fix it by adjusting the height calculation to the image size.
         int height = viewPanel.getHeight();
-        if(height!=getSettingsModel().getImage().getHeight()) height = getSettingsModel().getImage().getHeight();
+        if(height!=settingsModel.getImage().getHeight()) height = settingsModel.getImage().getHeight();
 
         // Since the tree builder algorithm is recursive, using a multithreading system is slowing it
-        if(threadCount>1 && getSettingsModel().getFractalType() == FractalType.TREE) threadCount = 1;
+        if(threadCount>1 && settingsModel.getFractalType() == FractalType.TREE) threadCount = 1;
 
+        // Cancel currently executing tasks
         executorService.shutdownNow();
         try {
+            // Wait a while for tasks to respond to being cancelled
             executorService.awaitTermination(10, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        // Prepare executor service
         executorService = Executors.newFixedThreadPool(threadCount);
-        int heightPart = height / threadCount;
 
+        // Divide the task between the threads according to the height (example with and image h:1000: thread#1 will do 0 to 500 and thread#2 will do 501 to 999)
+        int heightPart = height / threadCount;
         for (int i = 0; i < threadCount; i++) {
             final int start_y = heightPart * i;
             executorService.execute(() -> {
@@ -201,12 +230,16 @@ public class SettingsController {
         }
     }
 
+    /**
+     * Change the thread number
+     * @param threadCount the new number of thread(s) to use
+     */
     public void setThreadCount(int threadCount) {
         this.threadCount = threadCount;
     }
 
-    public void setShouldCalculateImage(boolean b){
-        this.shouldCalculateImage = b;
+    public Settings getSettingsModel() {
+        return settingsModel;
     }
 
     /**
@@ -231,15 +264,18 @@ public class SettingsController {
             return drawer;
         }
 
-        public int getxCenter() {
+        public int getXCenter() {
             return xCenter;
         }
 
-        public int getyCenter() {
+        public int getYCenter() {
             return yCenter;
         }
     }
 
+    /**
+     * Coloration mode (same for all the fractals)
+     */
     public enum ColorationMode {
         ORIGINAL, BLUE
     }

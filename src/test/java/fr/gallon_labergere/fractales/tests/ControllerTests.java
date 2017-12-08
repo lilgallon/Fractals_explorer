@@ -4,10 +4,24 @@ import fr.gallon_labergere.fractales.controller.SettingsController;
 import fr.gallon_labergere.fractales.model.Settings;
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
-/**
- * Created by lgallon on 22/11/17.
+/** This file is part of the JavaFractal project.
+ *
+ * JavaFractal is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * JavaFractal is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with JavaFractal.  If not, see <http://www.gnu.org/licenses/>.
+ * Authors : Lilian Gallon, Rémi Labergère
  */
 public class ControllerTests {
 
@@ -64,8 +78,8 @@ public class ControllerTests {
         assertEquals(model.getFractalType()==SettingsController.FractalType.MANDELBROT,true);
 
         // Change fractal
-        controller.setFractalType(SettingsController.FractalType.OTHER);
-        assertEquals(model.getFractalType()== SettingsController.FractalType.OTHER,true);
+        controller.setFractalType(SettingsController.FractalType.TREE);
+        assertEquals(model.getFractalType()== SettingsController.FractalType.TREE,true);
 
     }
 
@@ -104,11 +118,11 @@ public class ControllerTests {
     @Test
     public void testIterationsUpdate(){
         // Test min iterations change
-        controller.changeIteration(model.getFractalType().getDrawer().getMinIterations()-50);
+        controller.changeIterations(model.getFractalType().getDrawer().getMinIterations()-50);
         assertEquals(model.getIterations()== model.getFractalType().getDrawer().getMinIterations(),true);
 
         // Test max iterations change
-        controller.changeIteration(model.getFractalType().getDrawer().getMaxIterations()+50);
+        controller.changeIterations(model.getFractalType().getDrawer().getMaxIterations()+50);
         assertEquals(model.getIterations()== model.getFractalType().getDrawer().getMaxIterations(),true);
     }
 

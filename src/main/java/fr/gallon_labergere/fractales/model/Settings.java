@@ -5,35 +5,55 @@ import fr.gallon_labergere.fractales.controller.SettingsController;
 import java.awt.image.BufferedImage;
 import java.util.Observable;
 
+/* This file is part of the JavaFractal project.
+ *
+ * JavaFractal is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * JavaFractal is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with JavaFractal.  If not, see <http://www.gnu.org/licenses/>.
+ * Authors : Lilian Gallon, Rémi Labergère
+ */
+
+/**
+ * It is the model.
+ */
 public class Settings extends Observable {
 
-   // public static final float MIN_ZOOM = 0.5f;
-   // public static final float MAX_ZOOM = 100000f;
-   // public static final float ZOOM_MULTIPLICATOR = 1.2f;
-   // public static final int   MIN_ITERATIONS = 25;
-   // public static final int   MAX_ITERATIONS = 500;
-
-    private float zoomLevel;
     private SettingsController.FractalType fractalType;
-    private int centerX;
-    private int centerY;
-    private int progression;
-    private int iterations;
     private SettingsController.ColorationMode colorationMode;
     private BufferedImage image;
 
+    private float zoomLevel;
+    private int centerX;
+    private int centerY;
+    private int iterations;
+
+    /**
+     * Constructor
+     * @param zoomLevel the initial zoom level
+     * @param fractalType the initial selected fractal
+     */
     public Settings(float zoomLevel, SettingsController.FractalType fractalType) {
+        // We decided that the fractal type must be defined
         if (fractalType == null) throw new NullPointerException("The fractalType must be defined!");
         this.zoomLevel = zoomLevel;
         this.fractalType = fractalType;
         this.centerX = 0;
         this.centerY = 0;
-        this.progression = 0;
         this.iterations = fractalType.getDrawer().getInitialIterations();
         this.colorationMode = SettingsController.ColorationMode.ORIGINAL;
     }
 
     /**
+     * Getter on BufferedImage image
      * @return the current image
      */
     public BufferedImage getImage() {
@@ -42,6 +62,7 @@ public class Settings extends Observable {
 
     /**
      * Update the displayed image
+     * MVC: does not fire an event
      * @param image new image
      */
     public void setImage(BufferedImage image) {
@@ -49,6 +70,7 @@ public class Settings extends Observable {
     }
 
     /**
+     * Getter on the zoomLevel
      * @return the current zoom level
      */
     public float getZoomLevel() {
@@ -57,11 +79,13 @@ public class Settings extends Observable {
 
     /**
      * Update the current zoom level to a customized one
+     * It does not fire a change event since every time we zoom, we adjust
+     * the center, so the change event will be fired at the center change event.
+     * MVC: does not fire any event
      * @param zoomLevel new zoom level value
      */
     public void setZoomLevel(float zoomLevel) {
         this.zoomLevel = zoomLevel;
-        //fire();
     }
 
     /**
@@ -71,6 +95,11 @@ public class Settings extends Observable {
         return fractalType;
     }
 
+    /**
+     * Change the current fractal
+     * MVC: fires an event
+     * @param fractalType new fractal type
+     */
     public void setFractalType(SettingsController.FractalType fractalType) {
         this.fractalType = fractalType;
         fire();
@@ -85,11 +114,11 @@ public class Settings extends Observable {
 
     /**
      * Sets the x center
-     * @param centerX
+     * MVC: does not fire an event
+     * @param centerX new x pos of the center
      */
     public void setCenterX(int centerX) {
         this.centerX = centerX;
-        //fire();
     }
 
     /**
@@ -101,7 +130,8 @@ public class Settings extends Observable {
 
     /**
      * Sets the current Y center
-     * @param centerY
+     * MVC: fires an event
+     * @param centerY new y pos of the center
      */
     public void setCenterY(int centerY) { // TODO: CARE IF CENTER REACH MAX_INT, IT WILL FUCK UP EVERYTHING :(
         this.centerY = centerY;
@@ -109,57 +139,40 @@ public class Settings extends Observable {
     }
 
     /**
-     * Convert x to the map (fractale) coordinates
-     * @param x
-     * @return
+     * Convert x to the view coordinates
+     * @param x pos to convert
+     * @return x converted to the view
      */
     public int getViewX(float x) {
         return (int) ((x * zoomLevel) + centerX);
     }
 
     /**
-     * Convert y to the map (fractale) coordinates
-     * @param y
-     * @return
+     * Convert y to the view coordinates
+     * @param y  pos to convert
+     * @return y converted to the view
      */
     public int getViewY(float y) {
         return (int) ((y * zoomLevel) + centerY);
     }
 
     /**
-     * Convert x to the view coordinates
-     * @param x
-     * @return
+     * Convert x to the map coordinates
+     * @param x pos to convert
+     * @return converted to the map
      */
     public float getMapX(int x) {
         return (x - centerX) / zoomLevel;
     }
 
     /**
-     * Convert y to the view coordinates
-     * @param y
-     * @return
+     * Convert y to the map coordinates
+     * @param y pos to convert
+     * @return y converted to the map
      */
     public float getMapY(int y) {
         return (y - centerY) / zoomLevel;
     }
-
-    /**
-     * @return the current progression
-     */
-    public int getProgression(){
-        return this.progression;
-    }
-
-    /**
-     * Updates the current progression
-     * @param progression new progression
-     */
-    public void setProgression(int progression){
-        this.progression = progression;
-    }
-
-
 
     /**
      * When the model (this class) spots a change, we need to notify the observers about it.
@@ -170,19 +183,37 @@ public class Settings extends Observable {
         notifyObservers();
     }
 
+    /**
+     * Getter on the iterations
+     * @return the current number of iterations
+     */
     public int getIterations() {
         return iterations;
     }
 
+    /**
+     * Change the number of iterations (it means the precision)
+     * MVC: fires an event
+     * @param iterations new number of iterations
+     */
     public void setIterations(int iterations) {
         this.iterations = iterations;
         fire();
     }
 
+    /**
+     * Getter on the coloration mode
+     * @return the current coloration mode
+     */
     public SettingsController.ColorationMode getColorationMode() {
         return colorationMode;
     }
 
+    /**
+     * Change the current coloration mode of the current fractal
+     * MVC: fires an event
+     * @param colorationMode new coloration mode
+     */
     public void setColorationMode(SettingsController.ColorationMode colorationMode) {
         this.colorationMode = colorationMode;
         fire();
