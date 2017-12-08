@@ -1,15 +1,13 @@
 package fr.gallon_labergere.fractales.tests;
 
-import fr.gallon_labergere.fractales.Window;
 import fr.gallon_labergere.fractales.controller.SettingsController;
 import fr.gallon_labergere.fractales.model.Settings;
-import fr.gallon_labergere.fractales.view.ControlPanel;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/** This file is part of the JavaFractal project.
+/* This file is part of the JavaFractal project.
  *
  * JavaFractal is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

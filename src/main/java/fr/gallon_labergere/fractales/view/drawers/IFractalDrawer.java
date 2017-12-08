@@ -2,8 +2,6 @@ package fr.gallon_labergere.fractales.view.drawers;
 
 import fr.gallon_labergere.fractales.controller.SettingsController;
 import fr.gallon_labergere.fractales.model.Settings;
-
-import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /* This file is part of the JavaFractal project.
