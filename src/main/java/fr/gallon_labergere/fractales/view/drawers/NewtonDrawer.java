@@ -23,6 +23,10 @@ import java.awt.image.BufferedImage;
  * along with JavaFractal.  If not, see <http://www.gnu.org/licenses/>.
  * Authors : Lilian Gallon, Rémi Labergère
  */
+
+/**
+ * UNFINISHED
+ */
 public class NewtonDrawer implements IFractalDrawer {
 
     @Override

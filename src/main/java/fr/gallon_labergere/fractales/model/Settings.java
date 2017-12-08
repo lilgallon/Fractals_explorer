@@ -110,6 +110,12 @@ public class Settings extends Observable {
         fire();
     }
 
+    /*
+    * Important note: if the centerY or centerX reach the MAX_INT, it will change the position in the fractale.
+    * That's why there is a maximum zoom to prevent this. We couldn't use long instead of int because image.setRGB
+    * needs int as coordinates and g.drawRect too.
+    */
+
     /**
      * @return the current center (x)
      */
@@ -138,7 +144,7 @@ public class Settings extends Observable {
      * MVC: fires an event
      * @param centerY new y pos of the center
      */
-    public void setCenterY(int centerY) { // TODO: CARE IF CENTER REACH MAX_INT, IT WILL FUCK UP EVERYTHING :(
+    public void setCenterY(int centerY) {
         this.centerY = centerY;
         fire();
     }

@@ -106,6 +106,7 @@ public class SettingsController {
      */
     public void setFractalType(FractalType fractalType) {
         if (fractalType == null) throw  new NullPointerException("The fractal type must be defined!");
+        if (fractalType == FractalType.NEWTON) JOptionPane.showMessageDialog(Window.getInstance().getParent(), "Newton fractal is not finished", "Warning", JOptionPane.ERROR_MESSAGE);
 
         this.shouldCalculateImage = false;
         settingsModel.setFractalType(fractalType);
