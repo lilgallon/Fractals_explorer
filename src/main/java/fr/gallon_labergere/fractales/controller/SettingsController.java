@@ -80,7 +80,6 @@ public class SettingsController {
         settingsModel.setZoomLevel(settingsModel.getZoomLevel() * settingsModel.getFractalType().getDrawer().getZoomFactor());
         int newCursorX = settingsModel.getViewX(prevMapX);
         int newCursorY = settingsModel.getViewY(prevMapY);
-        System.out.println(x + " -> " + newCursorX);
         move(x - newCursorX, y - newCursorY); // Compensating cursor movement
 
     }
@@ -205,13 +204,15 @@ public class SettingsController {
         int threadCount = settingsModel.getThreadCount();
         if(threadCount>1 && settingsModel.getFractalType() == FractalType.TREE) threadCount = 1;
 
-        // Cancel currently executing tasks
-        executorService.shutdownNow();
-        try {
-            // Wait a while for tasks to respond to being cancelled
-            executorService.awaitTermination(10, TimeUnit.SECONDS);
-        } catch (Exception e) {
-            e.printStackTrace();
+        // Cancel currently executing tasks if it exists
+        if(!executorService.isShutdown()) {
+            executorService.shutdownNow();
+            try {
+                // Wait a while for tasks to respond to being cancelled
+                executorService.awaitTermination(10, TimeUnit.SECONDS);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         // Prepare executor service
         executorService = Executors.newFixedThreadPool(threadCount);
