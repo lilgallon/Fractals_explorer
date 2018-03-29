@@ -1,6 +1,8 @@
 package fr.gallon_labergere.fractales.view;
 
 import fr.gallon_labergere.fractales.controller.SettingsController;
+import fr.gallon_labergere.fractales.controller.SettingsController.ColorationMode;
+import fr.gallon_labergere.fractales.controller.SettingsController.FractalType;
 import fr.gallon_labergere.fractales.model.Settings;
 
 import javax.swing.*;
@@ -32,13 +34,15 @@ import java.awt.event.MouseEvent;
  */
 public class ControlPanel extends SettingsObserver {
 
-    private static JLabel progressBarLabel;
-    private JComboBox fractalTypeSelection;
+	private static final long serialVersionUID = 9089118420489666743L;
+	
+	private static JLabel progressBarLabel;
+    private JComboBox<FractalType> fractalTypeSelection;
     private JLabel zoomLabel;
     private static JProgressBar progressBar;
     private JSlider iterationsSlider;
     private JLabel iterationsLabel;
-    private JComboBox colorationModeSelection;
+    private JComboBox<ColorationMode> colorationModeSelection;
     private JSlider threadSlider;
     private JLabel threadLabel;
 

@@ -54,13 +54,13 @@ public class ControllerTests {
         assertEquals(min_zoom<= model.getZoomLevel(),true);
 
         // Test zoom max (zoomIn)
-        for(int i = 0; i< max_zoom / zoom_factor +1 ; ++i)
-            controller.zoomIn(0,0);
+        controller.setZoom(model.getFractalType().getDrawer().getMaxZoom()-1f);
+        controller.zoomIn(0,0);
         assertEquals(max_zoom>=model.getZoomLevel(),true);
 
         // Test zoom min (zoomOut)
-        for(int i = 0; i< max_zoom / zoom_factor +1 ; ++i)
-            controller.zoomOut(0,0);
+        controller.setZoom(model.getFractalType().getDrawer().getMinZoom()-1f);
+        controller.zoomOut(0,0);
         assertEquals(min_zoom<=model.getZoomLevel(),true);
 
         // Test zoom min (setZoom)
@@ -84,7 +84,8 @@ public class ControllerTests {
         // Test if an exception has been thrown when trying to set a null fractal with the constructor
         boolean hasThrownAnException = false;
         try{
-            Settings modelTest = new Settings(0f,null);
+            @SuppressWarnings("unused")
+			Settings modelTest = new Settings(0f,null);
         }catch (NullPointerException e){
             hasThrownAnException = true;
         }
@@ -108,8 +109,8 @@ public class ControllerTests {
 
         // Test mapping methods
         // Basic tests
-        assertEquals(model.getMapX(model.getCenterX())==0f,true);
-        assertEquals(model.getMapY(model.getCenterY())==0f,true);
+        assertEquals(model.getMapX((int)model.getCenterX())==0f,true);
+        assertEquals(model.getMapY((int)model.getCenterY())==0f,true);
         assertEquals(model.getViewY(model.getCenterY())==0f,true);
         assertEquals(model.getViewX(model.getCenterY())==0f,true);
 

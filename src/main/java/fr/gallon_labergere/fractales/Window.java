@@ -29,7 +29,9 @@ import java.awt.image.BufferedImage;
  */
 public class Window extends JFrame {
 
-    private static Window instance;
+	private static final long serialVersionUID = 5531463639553574853L;
+
+	private static Window instance;
 
     private Settings settings;
     private SettingsController settingsController;

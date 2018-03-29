@@ -29,7 +29,9 @@ import java.awt.event.MouseWheelEvent;
  */
 public class ViewPanel extends SettingsObserver {
 
-    public ViewPanel(SettingsController controller) {
+	private static final long serialVersionUID = -7897202260058234182L;
+
+	public ViewPanel(SettingsController controller) {
         super(controller);
         setBackground(Color.BLACK);
 

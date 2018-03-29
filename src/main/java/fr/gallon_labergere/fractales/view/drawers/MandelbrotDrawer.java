@@ -97,7 +97,7 @@ public class MandelbrotDrawer implements IFractalDrawer {
 
     @Override
     public int getMaxIterations() {
-        return 500;
+        return 2000;
     }
 
     @Override

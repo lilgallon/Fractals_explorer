@@ -25,7 +25,9 @@ import java.util.Observer;
  */
 public abstract class SettingsObserver extends JPanel implements Observer {
 
-    private SettingsController settingsController;
+	private static final long serialVersionUID = 7542686206155040419L;
+	
+	private SettingsController settingsController;
     private Settings settings;
 
     SettingsObserver(SettingsController settingsController) {
